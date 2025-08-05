@@ -1,0 +1,398 @@
+import emitter from 'tiny-emitter/instance';
+import services from './services/index.js';
+import { useIconsStore } from '@/pinia/icons';
+
+ /* wwFront:start */
+// eslint-disable-next-line no-undef
+import plugin_832d6f7a_42c3_43f1_a3ce_9a678272f811 from '@/components/plugins/plugin-832d6f7a-42c3-43f1-a3ce-9a678272f811/src/wwPlugin.js';
+import plugin_1fa0dd68_5069_436c_9a7d_3b54c340f1fa from '@/components/plugins/plugin-1fa0dd68-5069-436c-9a7d-3b54c340f1fa/src/wwPlugin.js';
+import plugin_f9ef41c3_1c53_4857_855b_f2f6a40b7186 from '@/components/plugins/plugin-f9ef41c3-1c53-4857-855b-f2f6a40b7186/src/wwPlugin.js';
+import plugin_2bd1c688_31c5_443e_ae25_59aa5b6431fb from '@/components/plugins/plugin-2bd1c688-31c5-443e-ae25-59aa5b6431fb/src/wwPlugin.js';
+/* wwFront:end */
+
+import { computed, reactive } from 'vue';
+
+export default {
+    ...services,
+     $on(event, fn) {
+        emitter.on(event, fn);
+    },
+    $once(event, fn) {
+        emitter.once(event, fn);
+    },
+    $emit(event, ...args) {
+        if (!event) {
+            return;
+        }
+        emitter.emit(event, ...args);
+    },
+    $off(event, fn) {
+        emitter.off(event, fn);
+    },
+     front: {},
+    $focus: null,
+    env: process.env.NODE_ENV,
+    async initFront({ router, store }) {
+ 
+        this.front.router = router;
+        /* wwFront:start */
+        this.$store = store;
+        /* wwFront:end */
+
+        //Init services
+        this.wwLog.init();
+
+ 
+        wwLib.logStore.verbose('Starting the application...');
+        await this.wwWebsiteData.init();
+        this.wwLang.init(router);
+
+        /* wwFront:start */
+        // eslint-disable-next-line no-undef
+        wwLib.wwPluginHelper.registerPlugin('plugin-832d6f7a-42c3-43f1-a3ce-9a678272f811', plugin_832d6f7a_42c3_43f1_a3ce_9a678272f811);
+wwLib.wwPluginHelper.registerPlugin('plugin-1fa0dd68-5069-436c-9a7d-3b54c340f1fa', plugin_1fa0dd68_5069_436c_9a7d_3b54c340f1fa);
+wwLib.wwPluginHelper.registerPlugin('plugin-f9ef41c3-1c53-4857-855b-f2f6a40b7186', plugin_f9ef41c3_1c53_4857_855b_f2f6a40b7186);
+wwLib.wwPluginHelper.registerPlugin('plugin-2bd1c688-31c5-443e-ae25-59aa5b6431fb', plugin_2bd1c688_31c5_443e_ae25_59aa5b6431fb);
+        /* wwFront:end */
+
+ 
+        services.scrollStore.start();
+        services.keyboardEventStore.start();
+    },
+     // TODO: Verify with Alexis, still uses wwImageMultiLang
+    getResponsiveStyleProp({ store, style, uid, states = [], prop }) {
+        store = store || wwLib.getFrontWindow().wwLib.$store;
+        if (!style && uid) {
+            const wwObject = this.$store.getters['websiteData/getWwObjects'][uid];
+            if (!wwObject) return '';
+            style = (wwObject._state || {}).style || {};
+        }
+
+        const screenSizes = store.getters['front/getScreenSizes'];
+        const screenSize = store.getters['front/getScreenSize'];
+
+        let value = '';
+
+        for (const media in screenSizes) {
+            if (style[media] && typeof style[media][prop] !== 'undefined') {
+                value = style[media][prop];
+            }
+            if (media === screenSize) {
+                break;
+            }
+        }
+        for (const state of states) {
+            for (const media in screenSizes) {
+                if (style[`${state}_${media}`] && style[`${state}_${media}`][prop]) {
+                    value = style[`${state}_${media}`][prop];
+                }
+                if (media === screenSize) {
+                    break;
+                }
+            }
+        }
+
+        return value;
+    },
+    globalContext: reactive({
+        page: computed(() => {
+            const page = wwLib.$store.getters['websiteData/getPage'];
+            if (!page) return {};
+            else if (!page.cmsDataSetPath) return { ...pageSanitizer(page) };
+            return { ...pageSanitizer(page), data: wwLib.$store.getters['data/getPageCollectionData'] };
+        }),
+        pageParameters: computed(() => {
+            const pageParameters = Object.values(wwLib.$store.getters['data/getPageParameterVariables']);
+            const pageParametersValueMap = {};
+            for (const pageParameter of pageParameters) pageParametersValueMap[pageParameter.id] = pageParameter.value;
+            return pageParametersValueMap;
+        }),
+        pages: computed(() => {
+            const pages = wwLib.$store.getters['websiteData/getPages'];
+            const pagesValueMap = {};
+            for (const page of pages) pagesValueMap[page.id] = pageSanitizer(page);
+            return pagesValueMap;
+        }),
+        colors: computed(() => {
+            const theme = wwLib.$store.getters['front/getTheme'];
+             /* wwFront:start */
+            // eslint-disable-next-line no-unreachable, no-undef
+            return theme === 'dark' ? {"2fb83fe8-2a23-4038-99cb-0314ff478b05":"#00000026","91910972-594b-40cd-9dea-184a30ca9a47":"#0000001A","d6ff8632-7eb2-4fa9-8e80-a4d0669e92c4":"#0000000D","9cb0465e-fb8e-4b28-9651-8ae38f614f39":"#0000004D","83284f01-c436-4f08-bef8-a24656593ce6":"#00000066","f8189765-3996-4098-aca7-756733309762":"#000000F2","a9ee131b-6880-43ee-a5ca-2bae85730525":"#FFFFFF0D","2e1f87f0-41bf-4318-bcc8-65420203c25a":"#00000026","81cefe5d-f902-4ff6-95b6-836577ac76fe":"#00000033","2fd39d7b-e28f-403f-9e6b-9b0079d0d992":"#00000080","22a521fa-46a7-45b1-aaa4-8df3ba2fe843":"#000000E6","1f686620-af4c-49c9-a52f-458c4d2b4731":"#FFFFFF1A","9da37362-598e-44ae-80c1-d9a6c9971236":"#00000099","915ec272-3a1e-4d07-a7d3-d4c734c0e13c":"#000000B3","06dc324b-da01-407b-a0be-6422aaf6b220":"#000000CC","5c91d193-5e08-4962-8795-5362e16b9905":"#FFFFFFF2","d3c93d79-2784-4bef-a800-185a47a4ffe4":"#FFFFFF33","91e68e53-c8e7-4d65-bd2d-91a477270627":"#FFFFFF4D","a171cab2-b056-4f44-ae63-e27925de76e8":"#FFFFFF80","71c5452a-5f6a-4d61-b17d-07a6f2e2931d":"#FFFFFFCC","2117ee65-e102-4f1f-a8ce-8dedc0fe3bc7":"#FFFFFF66","c6ab8819-5277-4d19-bd97-2615a1ba9bf7":"#FFFFFFE6","4b800cf9-b5fd-4f14-9914-1663137dc03a":"#FFFFFF99","50a833df-7544-4e5f-9f2f-b2d4d00be318":"#FFFFFFB3","bb9ddd25-e43f-412f-bdfb-bb008d61d9b1":"#FA820021","ba71a5bb-21db-409b-8865-1568df07dfb3":"#FC820033","3e0184d5-6157-4383-9f86-0136904ad4df":"#FD8B0040","05b62d57-b687-46f6-b81a-19a141f887a0":"#FD9B0052","31805781-a703-4a63-afa9-1e5d20a8b037":"#FFAB2566","433eeee3-4d81-429f-9c8c-f0d843316a53":"#FFAE3587","7757b275-b6d6-46d7-889a-142df30d4e2c":"#0077FF3B","e8b9fd5b-cd93-44c2-a186-bd6b1a842e57":"#0081FD6B","4a9cf385-c20a-4f5a-ac72-87d98d588f28":"#0F89FD80","c0ca871b-c907-4a1f-a3c4-3cacdbb0dfa2":"#0075FF57","9d917285-b08c-42f8-b395-bcacfe555eb7":"#2A91FE99","c2747b51-6d45-4550-9101-9e6e58228eef":"#3094FEBA","ebc4e0f4-c83a-4d67-aca5-1ed2c40c248f":"#FACEB817","ce4e5705-42d2-4ee7-8a45-7b70976845d7":"#FACDB621","494c8d9f-efb6-4da1-8d5d-0e3874d3793f":"#FFD2C12E","9ef2b9b0-cb57-442b-a85f-d16d3b17e556":"#FFD1C03D","858628a0-d803-4086-8ead-e1fab34e1cce":"#FDD0C04F","3a375502-38ab-4a9a-8d3a-d18063f237e5":"#FFD6C566","9a9321c7-2c55-46df-9c2c-fa7f95680c21":"#FECAB5A8","ee456125-933f-484e-9fc2-0a4f0aca235f":"#FEC7B09C","923ab07d-dde1-4129-9edc-eab0223748d0":"#FFD7C6D1","786982dc-a98a-488a-8c85-dbc5219dd18b":"#FBBB8A24","4dfae427-a4d8-4c74-b4f4-17755508c253":"#FFF1E9ED","670fe199-9fa7-4cd9-8de3-029afb9cf536":"#FCB58C1A","272b42bd-023a-4dd2-9419-8bb8d84cf9b2":"#FFBE8773","932ab9d1-d16f-4c78-95f2-ed70ba1f1908":"#FCB88930","0948baac-3238-4b9e-82b1-f98683c1c000":"#FDBA8740","78c3f1ad-455a-4290-851a-93a13b670e64":"#FFBB8857","622a464a-407c-4170-b42f-799370afe791":"#FFC18CB3","3fad6fe7-c4a1-4ec8-a06b-a1f5ebc1d902":"#FEB87DA8","e91accb3-5921-4ba4-8a80-ec2e32629071":"#FED1AAD9","4700db50-fba2-4ecd-adbb-811f04048499":"#FEECD4F2","0d9350a8-25cb-4f30-a84e-97af0e0fb71f":"#FE2A8B29","416ced0a-385e-45e5-b56f-d4a81d72035a":"#FD158740","3a6599cb-6208-4fd8-9f42-4a6c7e759702":"#FD278F52","3237d1e9-7bba-4a78-b048-14664a2ebee4":"#FE459763","5964f5d9-42a9-4e33-948b-9953bb618105":"#FD559B80","6afb96cd-88a5-43f5-a632-8860603cfff1":"#FE5B9BAB","e2ee02b6-1cd8-45ad-8017-9551a1f01c36":"#FE418DE8","8e70faeb-d780-4e1b-95e9-35cca3bfcfa4":"#FF5693ED","beea05d5-bb7c-402c-b023-b3c7db4f8d39":"#FFD5EAFC","e52810a5-afd6-4499-bfe2-5cc1749c199b":"#FF92AD","c2233fb1-2f05-442f-93fd-5c78e8e0228d":"#16120c","16eec6c7-1f81-4a99-928e-451ed289773f":"#3f2700","2ab3d9bc-f72f-4ada-af9a-52a84ba168e6":"#1d180f","d93879d7-f88c-4e55-82c1-e7a132dbd698":"#302008","d802b2fe-0099-415d-9405-21532c985d36":"#4d3000","7975774a-7be7-44e1-9c08-e2f0ada619d7":"#5c3d05","895f49a9-e43a-40ba-9116-2d38690666a6":"#714f19","92bf4d72-5a0f-4e3d-b341-7fa4ec149aed":"#8f6424","1b358951-e226-4fe4-a2fb-ee97a6134dfe":"#ffc53d","65706247-f5b9-40c5-bc61-e95b8024d605":"#ffd60a","b00b897d-cb0d-42d8-9d37-51df7561ec69":"#ffca16","33cefdaa-e38a-4214-858f-b53be32027c1":"#ffe7b3","c2d2c4c8-15db-465d-af67-e4e56781754c":"#0d1520","84c0417e-0085-4698-8558-a3a7eba75ff2":"#111927","51ce7bb0-e39f-4407-a2d5-5355af6129dc":"#0d2847","08fa4bc6-81be-4df2-9782-494b85262132":"#003362","ee175c44-39e9-4925-8a13-ed57f9dd451b":"#004074","b55f7b72-4b8d-4150-a197-d05ee9547840":"#104d87","6cafdf20-d507-44c4-9096-a7a56b2d4fd8":"#205d9e","354f5372-5131-4b7f-8bc8-80ca46c2c1ce":"#2870bd","17d5814e-a7d1-4e3f-939d-c6ada748d1dc":"#0090ff","838a82ff-794d-4470-83e6-fed319a530eb":"#3b9eff","7f75e202-a38d-496f-b22b-854d2b32a2c0":"#70b8ff","2e060504-cf7d-4c46-b553-0dbc8ff0871a":"#c2e6ff","20a2a891-043d-4c92-bb68-f794b381665a":"#141110","1b39e5a2-a676-46c1-b96a-ca4feb66b387":"#1c1917","0714a36e-fd03-4470-bfac-4705fafdf390":"#262220","e3c07c19-b09f-464a-85b1-880afd903c81":"#302a27","208382d7-8a32-4d48-a3dc-ae76ad1bb058":"#3b3330","5568748d-d523-4cd1-930f-6b6a5a595389":"#493e3a","f4d29838-7ec9-4513-85eb-81a20c252a0e":"#5a4c47","e21c4af6-0c22-4446-9caa-8bc3d7ef3dcb":"#6f5f58","2c7cf9cf-1dc8-4883-9c93-f20960faaaca":"#a18072","59869423-7524-4931-82f3-9e85a1d4d3e4":"#ae8c7e","a808d262-dd8c-4ada-85be-1ea91b23273d":"#d4b3a5","04739fcc-8f5b-4f68-beea-9f4de6403900":"#ede0d9","cd45d047-ad2c-4b30-889f-19f00cadfd40":"#12110f","a9a4d3dc-1c21-4294-8bb0-fbb2b02c2c19":"#1c1816","d4bc2cdf-0540-4c0a-808f-bd0eb8445633":"#28211d","f353a7f6-69e7-4ccc-9fa2-19cde7d8c2ff":"#322922","b4869daf-9aef-41e4-a7c9-a41f5fde553e":"#3e3128","2a3201c3-c5b2-4711-9728-452719321a23":"#4d3c2f","b65a1078-8922-4467-9360-2be790e12f2a":"#614a39","4bcd9b73-4971-40e1-883d-0380d5c7634e":"#7c5f46","ae7cde8d-6199-4c46-8248-6b60e74f6c3b":"#ad7f58","efd54f9f-5dba-4e3a-9835-06a35bb7806d":"#b88c67","1b3a0981-15de-4530-977e-105a3bc8a857":"#dbb594","326a2913-8d51-44a7-81e2-a8ddc0a00039":"#f2e1ca","74ca994f-f050-4fce-bf74-dcd962e157d7":"#191114","a9bb656e-0078-42c5-8d7b-e4bf57fe1f45":"#201318","104d683e-7a60-43ef-956d-5c2bae1f7e05":"#381525","522b1b0f-369b-43d2-ba32-ee2430224b27":"#4d122f","2543bdae-08d2-4647-ad68-d6155bf04c91":"#5c1839","4082f64a-31ba-4f19-a2fc-468eadcaafec":"#6d2545","ed8b0ff8-13e2-4fba-b375-e767145cd33f":"#873356","837d9127-e706-43f4-b1d4-c1f3ec0143f6":"#ee518a","30efdaca-0762-46da-b024-2fa8a1010b54":"#fdd3e8","4f74e730-0f99-4389-b46a-f82a0feaed1d":"#b0436e","7e1e3578-9d68-48a3-a09f-5367a3e1991c":"#e93d82","ecccaed3-91e0-417c-bb77-3aad209d2991":"#ff92ad","42bd0031-52c1-4e60-94fd-987ba8bd3c41":"#0b161a","6aa2f491-8920-4398-aa99-64b1ae1bef8c":"#101b20","8aeca44e-737d-4b64-8e01-3f86909a3ea3":"#082c36","0c3156cc-2a22-447b-8574-e9e111435137":"#003848","eb883ed9-5165-4a4a-9e85-f8178090e7ad":"#004558","27b45936-d25d-44e0-8f8f-5c427997ca03":"#045468","0f01cc5a-3258-4098-bff9-da8b46a8594c":"#12677e","91aaa4f1-136a-4a43-b95d-dcadc9581fc2":"#11809c","01f770c1-033e-41aa-a8d2-a09fda89af2c":"#00a2c7","9f786265-05b3-44ca-9d81-cbbdfee723c7":"#23afd0","765fde44-4b58-4eb2-b9a9-00981dcf7723":"#141a15","c47da7f0-1f70-46dc-a638-694c0f4e2c7f":"#1b2a1e","c77446c7-3276-4898-a84a-50f8fba15c51":"#4ccce6","50d3f684-4078-4424-8bfb-854a2ebccb38":"#b6ecf7","55838f21-33ff-489a-a1de-8029087db1aa":"#121211","5f70a507-6d04-423c-9731-364fa31b2dd1":"#1b1a17","0c5ef889-26d9-4c5b-af8f-ea2405a8d7f4":"#24231f","24921040-e189-4861-b683-c55a11cb9b81":"#2d2b26","4af5d186-e092-40fe-8e0d-87c31aef55c6":"#38352e","15808f5c-7c6b-40ad-9831-be29f4315fa3":"#444039","46fa4345-9005-435b-b95d-a3cb541bb7df":"#544f46","04d75611-1fe2-4b6f-b8ae-f724804129a1":"#696256","68322b9a-5051-4b10-9f5c-43eab101ea3e":"#978365","05027f9f-243d-4ba0-9c89-8c9aa1edffcf":"#a39073","3cb56308-63b9-42f4-921a-dff6233e9bde":"#cbb99f","0d73ed46-5d88-497b-887f-9f3d9d6d5810":"#e8e2d9","e7b6d9a5-cf5b-490b-8e5f-200daeba0bad":"#0e1511","375c6b58-341c-4b0a-8212-3ca6d6481c1b":"#1d3a24","ffe3e245-8669-45c9-8822-28ce5d3670c3":"#25482d","6d584657-1830-4fb4-b028-dfb44edbf9b1":"#2d5736","a8c93299-3830-497c-af27-bbcbb5be6ec5":"#366740","612e26c2-1a14-4e75-b155-173c24e81fe8":"#3e7949","9c79e108-7fb7-4625-807f-9aaba546a80b":"#46a758","c7c94f39-47f9-42ff-8e31-5efedc46af12":"#53b365","8f4adc67-895c-4615-930e-77d2b5d1ffdc":"#71d083","9cd87b3a-f5b3-4749-be53-f85cd1e68fce":"#c2f0c2","0d430d75-bf7a-4ce9-96a2-178db7eb20b5":"#111111","a79fc7a0-f4ee-400c-b3e2-463f9d1c420b":"#191919","43cf1a24-f0e4-4d3a-9f77-7215b5ce2db5":"#222222","74cc5b39-1963-4ab0-a787-4fa362d2a770":"#2a2a2a","59bcc112-8d0a-49fc-8f2d-eb808b9bc04f":"#313131","8cf785cf-1184-481c-88d6-e13d1746b612":"#3a3a3a","2a1d2c43-89c8-4fe4-8acb-bd3e5180bb6f":"#484848","c7a66dde-082e-4af0-80a2-0d4b1b61b84c":"#606060","cad04fea-720d-4cf0-8a66-983761d2a91f":"#6e6e6e","e8cc48a0-5f8f-4718-b221-c610342a40be":"#7b7b7b","19866980-960a-4e14-93aa-fff87f5b0b1f":"#b4b4b4","010656a8-fea7-400a-8b57-43b84b0c637f":"#eeeeee","c2c802a9-afa9-4a0f-91f6-a1ac6f768c5c":"#0e1512","9ec4c490-2bdc-42f5-aec4-22131a0a9c15":"#121b17","0d2a6d5f-6724-45f5-9c51-2e60cb8511c9":"#132d21","561616a0-6ae1-42c0-9c48-9f9cb9e1fa97":"#113b29","8dbfde6f-d8d7-43af-bf84-f7825cc537c1":"#174933","e6439f51-de97-434f-805d-980c1a16bc62":"#20573e","e160370a-c8eb-44ec-a888-617c513a31c2":"#28684a","90dbeec7-697c-4729-897d-7ef807c4288e":"#2f7c57","aad3871f-f0e7-48d5-80c8-12d53c171296":"#30a46c","76073bd0-7b7e-485a-91e8-12ff6010a427":"#33b074","b2e08ee2-192a-4128-a54c-5dc1e57c7e07":"#3dd68c","6b82f319-93d2-48b1-b9f9-161d9632ff11":"#b1f1cb","c07995ac-b84d-4686-8a52-c5e6795da4b8":"#11131f","2fb7f6f2-8247-44d9-8d63-91cb26658ede":"#141726","2a50775a-9053-4d89-be48-716c223d1762":"#182449","d730c3f0-8c4c-48bd-99cf-a6d1142c120f":"#1d2e62","f66c117e-3c07-4192-8a6d-07487f6631c8":"#253974","eb51564f-8fed-4afe-b550-91bb2e810a1c":"#304384","0a2d7e8e-2995-4b15-90a3-aff92644cc7f":"#3a4f97","5296df8c-7c84-4b4d-ba3c-fa452db1352a":"#435db1","2d878668-f1c7-44c3-a669-ac85e50fb514":"#3e63dd","20ad32d9-8f9c-4bcf-9865-21ef4ffd1d48":"#5472e4","799598cc-0b59-48d3-83bd-3f04691d9c05":"#9eb1ff","7c36beb9-a1c9-4ef8-aeb4-3e0895f98b74":"#d6e1ff","922f6539-17e1-4021-859d-0280da9b205e":"#13131e","0bd47d21-152e-48eb-b2c7-525b769ecc95":"#171625","5cd09ae5-fb6e-4f8c-973d-afdf20cd6a98":"#202248","a4914759-fe42-4731-9d66-82948141bb57":"#3d3e82","0cbbccf6-cc10-4e93-85b3-f81ed55f8934":"#5958b1","0700eb6b-bce4-42a3-afdc-69be4eced602":"#262a65","06f44fb3-1d57-463a-bee5-45ab9a1eef85":"#4a4a95","6c2011aa-00b9-4b9e-a7d8-fd4571bf0536":"#5b5bd6","f11d7df4-4c50-47f0-b5c2-7afed8e7a002":"#1b5745","554d595e-ab6d-4026-94fa-1b769349e217":"#1f2917","6e5baeb1-3016-4fe2-9756-6e7e461286fd":"#bde56c","233338e8-a6c6-41af-9d91-fc03fee5b6b1":"#e3f7ba","6e3f0730-5893-41d9-ad83-5d3c17d5bce8":"#303374","c368fd8a-7b9d-4dfd-b704-c57df189186e":"#b1a9ff","df5ee5b8-3053-423b-bc6a-09bf6872154e":"#121c18","4b455f81-41ad-49c6-971c-acf558f03c41":"#0f2e22","10590158-0ecc-480d-9821-a67d3031d055":"#114837","afca643a-5675-43f4-9bd5-f36e6a7d41b4":"#334423","8d687444-5dfc-44ed-9c98-9e1d87fa592e":"#6e6ade","c584b28b-fd92-47ef-a677-cc04229f23b3":"#e0dffe","01de2c52-1216-4384-b47b-db3701d0630f":"#0b3b2c","50c32a67-d9c5-40cf-9ad2-723172897207":"#246854","4342c624-ed3e-49ce-922f-f50902667636":"#27b08b","963924a1-2c69-4ba4-a570-9adc8d76d50b":"#1fd8a4","f38abed4-9aeb-419e-91f7-887fa7897010":"#3d522a","75bf66c8-2978-40b8-bea0-80de3a07e825":"#577538","8f871043-0432-4709-a3b7-47674de8106b":"#d4ff70","9ba5264f-1337-4450-9093-8443a773b468":"#121113","6b138d7e-6bbf-4b64-94b7-a8ba0e157d76":"#2b292d","ba22830c-06b6-4fc6-a887-d222946ab9fd":"#49474e","08d1248f-d264-4ff5-a88c-3e9da0f521c3":"#625f69","fa55287e-04d5-44aa-9b79-c7de9bbf8971":"#0e1515","aa9baab9-bb91-4ebe-a243-f68298569321":"#277f70","078a2e73-b34e-429f-ba56-c8a262531bb3":"#c4f5e1","191745d1-986b-4a85-ab1a-32e70af82a24":"#454843","d0d47219-db38-440c-a73e-5ab0578791da":"#181917","bd57d145-81e7-4f5b-baf0-4126e6f75b2f":"#eceeec","ff7a8e19-07c7-4040-b50c-56bccc7a5313":"#0d1512","48377ba1-6bad-4767-a524-b86cc5dbb3b5":"#2a7e68","aef8b672-b90b-42d2-a625-635ecadad1f3":"#29a383","80ad40e1-e000-4783-a0d5-33efb775cb74":"#adf0d4","e821e737-7b58-4b25-a03b-1a2dc63a5f94":"#11130c","1379d5bc-ab24-4b23-8f0e-f51fc1c9e8ab":"#151a10","0c5aa51a-5bd2-4a76-bc97-8bb197a2aa08":"#29371d","74c766ba-f66a-494d-b5db-24e8902638a9":"#496231","9f7e7953-fef9-4300-be4e-cb0c9aa81a5b":"#bdee63","fc9ca1a9-b057-4cc4-8218-f858807b3b39":"#1a191b","babd9a0c-8b2f-4d6a-81cf-cb08b632ddb5":"#232225","ee69d1a1-5614-427d-bc26-6a9095edbcce":"#323035","01736248-30b1-4939-9419-f94dc1149c7a":"#3c393f","d3431a76-e504-445c-aa55-15cb3d47e21c":"#6f6d78","792dc169-52dd-43f3-85f0-2a6dae156e65":"#7c7a85","15de3f36-98b0-49a1-a55b-fa378409c245":"#b5b2bc","deec0f76-b15b-4e73-83eb-bd2b79a86037":"#eeeef0","e7c92b0d-be94-4a2d-a5ba-16ab83b0e6c3":"#0f1b1b","546aa468-9a53-434f-acc2-9961fb371ea4":"#092c2b","1d0a5221-96fb-457a-8b0f-b537785d19e7":"#003a38","8adb7ce3-9710-4876-ad4c-44e0916fb266":"#004744","08b23ccd-1fac-4986-af13-aac97158848b":"#105650","658bdb64-6559-4ef7-91df-0ac1178b9cee":"#1e685f","98836466-a1b7-4ec1-9ac4-7de6bc78cc1a":"#86ead4","a962b5aa-72e0-4fb0-a233-d95c8bc0fcdd":"#a8f5e5","9e50bdca-be80-4eef-ad09-16b4c31346cf":"#58d5ba","12fd55ad-855f-4807-93ac-ec83a6cdccea":"#111210","7a4e6d48-a158-4d26-be4d-41bb993290ed":"#212220","40401cfc-50d4-45c9-b05b-05440559188b":"#282a27","3c19afcd-f5bc-4783-bd52-e027c207115d":"#2f312e","93eb9d88-1bd4-4578-b82f-95b9c3878246":"#383a36","4412cce1-5990-4395-987c-a09e44efaeb4":"#5c625b","11d00aed-48cc-419a-9925-843b7b58668d":"#687066","ad037fd2-7f22-43dd-9190-8ceab5b39f6b":"#767d74","1a4388f9-7098-4646-b06b-c661446366f8":"#afb5ad","b31e7cda-6eba-4a8d-a1bd-799f07c21e76":"#17120e","588b56b2-7149-4712-9ee3-6690e6fdfff1":"#1e160f","ac5471d1-6464-4292-ad80-98bc840ad8ff":"#331e0b","b625a68e-a7c9-41b4-8525-ec76ec5e7c87":"#462100","5f6e5433-d4f4-4462-a1d6-ae2b3de062c3":"#562800","f2faa1ea-eec5-415f-a189-2598746063e5":"#66350c","61c378a2-51d8-4514-a84f-37f2aef49542":"#7e451d","4b2e4515-541b-4558-a348-eb0a52ff92bd":"#a35829","2c9be5cd-3ed6-49eb-a473-bb577b9a48c7":"#f76b15","57f35cc6-0385-429e-b148-402ebcb240c2":"#ff801f","33563e9e-a732-4a62-9b27-02a816a0a4f3":"#ffa057","686180ec-b1ee-40a9-ad70-f3569b6e141d":"#ffe0c2","b7905d2d-7619-438d-a86c-85bab20a155a":"#833669","f594660a-8088-4d72-ae64-cd31a5f1f44c":"#191117","b845bdcb-739b-4d13-a761-c18ebb54040a":"#21121d","7efea7c2-a24f-4871-83a7-4220484357c9":"#37172f","942a0cd1-763e-46bc-beed-b3ef03dd7dff":"#4b143d","29552817-258a-4b4f-820a-1d8ef0ce2e88":"#591c47","0f6a16fa-9053-4fa6-9869-2f677425fca3":"#692955","a329b311-a15d-4347-a029-fbdfde400e7c":"#a84885","26b421ef-3dd9-429f-a60f-3f935fbb4ebd":"#d6409f","89c2bbe4-4481-47f6-80d2-5879a29535e8":"#de51a8","c3e1e747-2210-44c0-9feb-1f7012a8ef86":"#ff8dcc","9b7122cd-1f3b-4916-809c-fd5e591bdaa6":"#fdd1ea","114a39fd-c54c-402a-8b7c-1726188693ae":"#181118","1eb76165-67b1-4453-81b5-f01be0e78d96":"#201320","49d6d764-4043-427b-b598-aac9b868d74b":"#351a35","75af7f72-8330-451c-84b0-3a43077c97c6":"#451d47","680a6caa-913e-4265-9fc0-54c49bea7df7":"#512454","5e18a9f2-ca66-4b84-8ada-6dfed0c7b3d5":"#5e3061","ea98a857-9c3a-4da6-b7e7-bd11e0e0a720":"#734079","03defa73-d811-4859-841f-288df1c6a40d":"#ab4aba","fcecb1cb-1676-4988-b1c3-a739d2629c18":"#92549c","106c645b-5afb-4346-b0f8-b8f1e2d7bf00":"#b658c4","b74d5204-adbd-4c4f-ba7e-300a0f7d5d6a":"#e796f3","c668fc4e-a868-460b-b47f-ad3931e7ca02":"#f4d4f4","9ac26069-80ae-4f49-ba57-59048b161fea":"#18111b","6a58808c-c1d0-4409-a218-db49287504f9":"#1e1523","7274cf36-63c3-442a-9bca-8edf314dcc2c":"#301c3b","81582944-8dc0-4937-80b9-932db1eb76e5":"#3d224e","ca42f18e-2422-47f1-b0ed-5a0b91c4365c":"#48295c","0856913e-2f99-4ac9-90ef-99f079907993":"#54346b","5c40fb79-3c6a-43e6-8d20-24834cb12f32":"#664282","5e2a73f4-b745-42ea-ac32-e2a128413470":"#8457aa","e7c44a12-2319-4e16-a0d8-aa7ff458d8d1":"#ecd9fa","e378fd8a-45e0-4e08-b7a6-71402129b723":"#8e4ec6","246fe3f4-c5f5-4ff6-87da-10e2d5913293":"#191111","a0703809-03c3-4c51-8e12-6b76aa59ec76":"#9a5cd0","96263c7e-aa69-41e5-b696-2170e5029e15":"#d19dff","97526226-77e6-4ce5-8b16-09f6467e1b90":"#72232d","52ec9f12-39b0-4f55-8b83-23fabbb350df":"#201314","eb3a09d7-387b-4291-a42a-42b1cc8a93e9":"#3b1219","56577e56-deb6-4f92-96ab-15a7aac1d271":"#500f1c","1367d44a-efaa-4627-a7e5-b152e221a5a6":"#611623","67af1d52-69bf-47e7-ad27-4cc130a7d505":"#8c333a","fb249d9d-977e-45d3-b522-68d4362bfcf2":"#b54548","474f243a-8269-4cdf-8a6a-fdb6a20c81a8":"#e5484d","ddf2650a-74d5-4c64-aa85-a9422d9ad3a9":"#dc3e42","335d0c48-b7e9-44ed-82b1-157ef64e07df":"#ff9592","04a399d2-a708-4a6f-9fad-22a7cfd5d252":"#ffd1d9","7f68b8c1-48ff-4278-847c-82e7aa3e5e53":"#191113","190b423b-87de-4918-8c6f-c0d7ee1b1a57":"#1e1517","f243000d-7de4-4996-9e99-a7e4ac47b6fd":"#3a141e","175c0340-b6e3-4d30-85ea-db29f94d5765":"#4e1325","8270eadd-5be3-41fc-8784-ab466f7f590b":"#5e1a2e","89d4b468-e65f-4545-9ae6-2445729fd0a6":"#6f2539","664d6593-21e7-4faf-98cf-46be0be88eaf":"#883447","bd0017d0-af27-4ca1-95f0-50ce447d5446":"#b3445a","5f70b10b-9db0-41be-b6b1-7c7a2c37ac13":"#e54666","bdaa28d8-fd8f-4214-aac8-459615747466":"#ec5a72","825b1af1-d8b2-433c-856b-b9e69fcb33ff":"#ff949d","c27f2d1a-a576-4e07-be3c-9161ac568979":"#fed2e1","628727de-b4a4-44fc-b125-71dd48c41a14":"#101211","1dd8eb27-3bf4-40d2-a71e-cef34673eadf":"#171918","8795c841-c8e8-410b-af14-54b270ceeec0":"#202221","097975a3-1e78-46d7-9bb4-5805b9fed7dd":"#272a29","0922688a-56f1-4f39-9a2d-20da2f9dfad3":"#2e3130","6e35a76c-5aa9-4ad0-be01-d79281df6aaf":"#373b39","22dc7225-a86a-4596-a67f-a45962dbab18":"#444947","4b96f801-9175-4100-a93e-b6e3d58590d8":"#5b625f","4f399f8a-f7b4-4c87-bab0-e2380710158a":"#63706b","91f49010-4e4d-4041-b145-d4a9ea3fed7d":"#717d79","c4947a25-9c3c-4bb5-9499-63b1e632d962":"#adb5b2","6cced9c2-594f-4fcc-a293-db25698a2f6d":"#eceeed","25502bce-7d3b-4f3c-bf8d-928f0c64ab1d":"#111110","09024f1b-ae20-464c-9662-ae8c5159c850":"#191918","fdc32f5a-8958-48f4-bfe2-6d874c720dc7":"#222221","c5720e2c-9ae4-4926-8a2e-be86942e653a":"#2a2a28","56d5abe5-fc2d-445f-ac49-cdd02cbd3b1e":"#31312e","5800fb14-512b-4811-a629-af1e15ab9aa6":"#3b3a37","699b6205-5310-4722-8016-9536049e2553":"#494844","bd493529-7360-4d2e-9a51-153c43d987ad":"#62605b","a160207c-84c3-4f7c-bca2-9bd1f8efd991":"#6f6d66","2f6e1bee-09a2-4764-8312-8bfdd83db34d":"#7c7b74","497445c4-c9f1-4d8a-afd7-4fbcc14b16ee":"#b5b3ad","cf6f4bbc-3852-40ed-a080-066f1aa0f409":"#eeeeec","d8fcd38d-f5e4-4b58-8d03-6de925dce618":"#0d141f","266e4cd0-ca31-44fd-afba-151820ac2824":"#111a27","2e4abeca-0bda-4f75-b46a-65fe131c6556":"#112840","44220383-00d2-4b2d-80e3-073c6830af65":"#113555","c1fea308-46c6-4ee4-be71-b9faabf2b1d2":"#154467","274f6ecf-3a1e-4ba1-9710-eb1df725f57f":"#1b537b","f8ff82e0-75ff-42e1-aa9b-6a2c9f3ddf4f":"#1f6692","85dbac70-4a30-4d33-afea-55597d9f4f8c":"#197cae","51cf14c3-7bd5-48db-b889-b738883c2009":"#7ce2fe","506a934a-5999-4202-87c0-3660a4549245":"#a8eeff","2d3e31fd-1651-4b66-9bd2-d33fb2848af0":"#75c7f0","c54c9c11-1478-413f-b424-489115c5c3fe":"#C2F3FF","a6b2ce2f-d563-44e3-8b13-aee9ea658f4b":"#111113","f98a48cd-8423-49a1-8420-ea99e243eb78":"#18191b","2e4a46ea-d23e-47af-8de5-2012141d4e13":"#212225","50ce7b2d-eb45-40b9-967c-6b3700298240":"#272a2d","196e91a8-031a-430b-89f9-46cfe2217249":"#2e3135","893caf1f-0499-4706-bfb4-70d0acb7b5c1":"#363a3f","51440870-1909-47ba-ab5d-1782297c4153":"#43484e","3e1e278d-17d7-46f3-bc88-af5d4e4ba497":"#5a6169","e3cb9fde-bc76-4f9e-a3a1-de4dbc80aa09":"#0d2d2a","03d8ab36-6dfe-4dc5-832b-fa2ab2e3d7f1":"#023b37","1418e5d4-fbbc-4fb9-ae46-91ebca6695f4":"#207e73","1c9361fb-04c6-4be6-b6cc-f229c8e1a278":"#12a594","ab2eccf5-7b70-47cc-a7a5-994b59aca176":"#0eb39e","94ab5095-c320-4454-bff5-471054eb4953":"#696e77","fb7fab79-6a16-428b-ad7a-abb6401b493e":"#777b84","58034fe7-2062-4a36-b0ed-1bad29e29970":"#0d1514","359b9afc-3a8d-48b6-9fc3-f88811570822":"#b0b4ba","c1e37bb6-ea23-4603-bd39-3cabc2b69ec2":"#111c1b","2da3ef48-4a69-4119-a5bb-da96e767948d":"#084843","879248ca-0d25-4e6e-9ea8-77fc4be2d326":"#1c6961","d82cba99-7253-4a3a-9b64-7835ae679ff2":"#6e2920","ee62e695-1d22-4ca8-8c98-bb0d74d76603":"#853a2d","f57bebb9-bdd0-4286-82a5-7e32b71c1d77":"#edeef0","416506e4-c442-46b9-9056-170edad2a259":"#0bd8b6","a8e1776e-c6be-4bce-9b08-5ae13c7ecc6c":"#adf0dd","48adff8b-ed15-4c4c-bda9-e889b537bbcf":"#145750","a78da67c-bc16-4c41-a0e9-2c69331456b1":"#181111","ec236d0f-8e40-445d-9e9b-c3b91f8e7388":"#1f1513","247cdbc6-802d-4956-a27b-6590c1230fb6":"#391714","a5329ff0-b07a-4c6f-b1de-7a46a1491b41":"#4e1511","96f5f884-6e75-4a8e-a750-8bd038e6841e":"#5e1c16","084c892d-ad79-4dca-aeae-e664d3d4ce32":"#ac4d39","61099aa0-9f17-4e21-82d2-4c94c6e4e6d2":"#e54d2e","f4c2f501-6c06-47ca-890c-28f5eb5ea266":"#ec6142","cb438986-55c5-4a91-b71c-fb84944d463f":"#ff977d","ff011285-31a2-46cc-b654-56710852bb1f":"#fbd3cb","991eeae8-b73e-4ed1-a05e-05fff48d0e28":"#14121f","232ada1d-f77d-4d77-bef0-238d0a3b7808":"#1b1525","7464757d-2b98-44cb-90ee-1be813e73a87":"#291f43","4b27b6ef-ac70-4b29-b0cd-847e0554af06":"#33255b","f03758ed-e275-4064-938d-5e5b62d7215d":"#3c2e69","231e33d9-1430-4aa3-9931-6a3245fc1664":"#473876","b185465c-d1d8-4a32-82db-3a13cf465186":"#56468b","5a95a472-a8ce-4e57-afdf-780c0b0c9ba2":"#6958ad","66187263-ac87-403b-902f-7c2edd9dbad1":"#6e56cf","64f73f09-aada-48ef-9586-fa9b3d8a2ef1":"#7d66d9","b3b7689a-fec7-4049-a672-7fb17aeb9507":"#baa7ff","df0b645e-bca9-46f2-907e-6181de62fc9a":"#e2ddfe","2717d257-145f-4ec8-b760-49376b7b3576":"#14120b","361747f8-b96a-4ac5-bff8-b0536cf54b33":"#1b180f","b91b555b-9c52-4936-89e6-6a62b98c048f":"#2d2305","37dd9254-8f72-4388-98ab-b0b9f669831b":"#433500","14fdb348-3ec7-43a2-bef1-c6d1c3bd777b":"#524202","fc3713bd-7212-451e-a3fe-35afe32325dc":"#665417","47159f15-97d2-4563-8908-3538fc3cb4c3":"#836a21","20e749b4-ef0f-4cd3-a8cf-45190141d82b":"#f6eeb4","80c79f56-e61d-4286-a672-51149bc2496d":"#362b00","865b3eb2-c4e4-4b80-99f9-74532e61f7bb":"#ffe629","3b7942b5-94a9-4339-b680-e384d360288f":"#ffff57","6b377059-06ca-4b11-a274-457e5cd028bf":"#f5e147","729c511f-5dd0-44d1-89ff-a3f77d8c5d98":"#E63C0005","7429ced8-2484-4af8-9693-55dbaade3994":"#FD9B000D","4c82869d-31d0-482f-b91a-2e0601f7f9d5":"#004DF212","0c3eb0a8-d935-480f-990a-d5f0429ca9b5":"#1166FB17","efc575e8-2d96-4a20-a937-16c45edaa914":"#D1110005","0d68d22e-b3d6-43df-929d-26fde968fbfd":"#FBBC910D","bc5575e9-a458-4ee3-822c-85d2f9240d9e":"#91110003","c8d5e384-31e1-4de3-a53c-9aa46bd54629":"#fba67c","d1d21876-aac7-4376-9ca4-6931ad4f52a5":"#F412670A","118f0161-bdc5-4e7a-938a-c88e77bc3cd5":"#F22F7A12","0a1be888-d58d-4d03-a22b-88445e473998":"#0091F70A","16b13b1e-1cb0-4699-96bf-281f5a749624":"#02A7F212","e9cdfa8f-2b4d-4eec-ad79-aa3e5712a39a":"#91911103","846eff29-41c8-4a7d-9ebc-591001073ad1":"#F9E29D0A","12794ef8-bb0c-4050-8868-4fe28aeb91bd":"#00DE1205","9632f9a7-3034-4724-a6c5-0f9dac59a2fd":"#5EF7780A","120b36fc-6688-4402-8ebe-67ecce921472":"#FFFFFF0A","670b07c4-9ed5-47dd-9219-f30e5585f228":"#00000000","5a7b3dac-5cde-4af0-83b6-aba562bfcfbf":"#00DE4505","87ecdeeb-c3d1-4ded-9a19-50096f5edab7":"#00DE4505","3e31012d-30f9-482f-9f57-2a99d480b9de":"#29F99D0A","9a61edd2-e53a-4a64-9414-b08ac41ca73e":"#1133FF0F","a20543f0-0779-4038-921e-a0cad99f0c46":"#3354FA17","ef9eac95-d2bd-4ec8-9df7-1b362a652e38":"#3636FE0D","ab4ed840-0829-4ed0-91ae-a81a54308841":"#564BF917","ee79a378-edaa-4a34-aca9-2ed13d012d6f":"#00DE4505","fc8ccfa8-d433-426a-a4d8-65e8960d4399":"#27FBA60D","ecef9028-c347-4ca7-b4fc-255037538117":"#11BB0003","f766e64f-a8ca-4f18-a47e-0d7c79fe1993":"#78F7000A","5df81753-e46c-44de-8e51-086307294a52":"#00000000","26210711-81b2-45a1-9ac1-a55b563b224c":"#F5F4F60A","d8dbe784-4d46-4852-99ee-1bebe23f24ad":"#00DEDE05","f1bd2306-6777-40ee-8f5e-ede3d7977d08":"#00F9F90A","7d7e5628-f3b3-4430-a25c-baf4e67166ce":"#00000000","8db07d59-a55c-46bd-9225-aa81c5613a83":"#F1F2F008","e3a0255d-313b-4e57-91e7-8e30523089e3":"#EC360008","6a597173-a977-4181-a831-afa9e0e308e6":"#FE6D000D","d42eb3da-b78a-4cdb-b334-a56bb1a37d47":"#F412BC0A","07ddd4a3-c8ec-48c2-aee1-247a35516079":"#F420BB12","ae56fbf1-e5a2-4c22-82f9-fb185687ff53":"#F112F108","81b0c205-ba51-4915-9b21-3a829a2e0eda":"#F22FF212","64539750-0e77-4ac8-ace5-b1dd92305715":"#B412F90A","97dfec95-697a-406e-b503-946ad9a3d13a":"#B744F714","d54c8b24-cac7-4474-b515-df4451e16f1b":"#F412120A","3c3481c1-46d8-47c1-bc6f-171163b405f2":"#F22F3E12","9f0d0a26-d8cf-4342-8919-e1313a5787f1":"#F4124A0A","b2c56336-064b-4098-aead-b0e2d40da1e8":"#FE5A7F0D","71f48bfa-7294-4e2f-a723-45e36894ed93":"#00000000","f5bfb9aa-6ef1-475b-88b9-e37e60375d08":"#F0F2F108","07b11abb-6b13-4769-a57c-f23032235fd1":"#00000000","cde5df5c-a17e-4ff7-ac16-3ebd09c21b3d":"#F4F4F30A","1504e652-8ed2-47f7-acb5-59dff9886668":"#0044FF0F","f4640116-2b81-42fe-a46a-cb60f7d5b576":"#1171FB17","47fe7cbd-7fb3-4a53-b28d-bff39dca7f7f":"#00000000","6a2363e8-2ede-4d74-92ef-180cd2b4ba7d":"#D8F4F60A","38236ce6-671c-4696-ad65-8089666c470b":"#00DEAB05","98f76a8e-f78e-4f0c-9b52-ba6f0a09b23b":"#12FBE60D","081f1f72-e236-45c6-8de8-ac4a271d3bbb":"#F1121208","7c9694a7-c3e7-4a86-bb4b-a9939afc05c4":"#4422FF0F","96dd4c25-6979-46d0-afc1-7a121f101534":"#FF55330F","e8b3e63e-8392-4ea8-9f80-52fc48a678e9":"#853FF917","1ba65d7f-8a23-4579-aa20-763bc95344e7":"#D1510005","bfcd0860-7b1f-414e-8cfc-56625a4cbb12":"#F9B4000A","63fcfb03-e3bd-4c51-a12b-52a716ae345d":"#FFFFFFF2"} : {"2fb83fe8-2a23-4038-99cb-0314ff478b05":"#00000026","91910972-594b-40cd-9dea-184a30ca9a47":"#0000001A","d6ff8632-7eb2-4fa9-8e80-a4d0669e92c4":"#0000000D","9cb0465e-fb8e-4b28-9651-8ae38f614f39":"#0000004D","83284f01-c436-4f08-bef8-a24656593ce6":"#00000066","f8189765-3996-4098-aca7-756733309762":"#000000F2","a9ee131b-6880-43ee-a5ca-2bae85730525":"#FFFFFF0D","2e1f87f0-41bf-4318-bcc8-65420203c25a":"#FFFFFF26","81cefe5d-f902-4ff6-95b6-836577ac76fe":"#00000033","2fd39d7b-e28f-403f-9e6b-9b0079d0d992":"#00000080","22a521fa-46a7-45b1-aaa4-8df3ba2fe843":"#000000E6","1f686620-af4c-49c9-a52f-458c4d2b4731":"#FFFFFF1A","9da37362-598e-44ae-80c1-d9a6c9971236":"#00000099","915ec272-3a1e-4d07-a7d3-d4c734c0e13c":"#000000B3","06dc324b-da01-407b-a0be-6422aaf6b220":"#000000CC","5c91d193-5e08-4962-8795-5362e16b9905":"#FFFFFFF2","d3c93d79-2784-4bef-a800-185a47a4ffe4":"#FFFFFF33","91e68e53-c8e7-4d65-bd2d-91a477270627":"#FFFFFF4D","a171cab2-b056-4f44-ae63-e27925de76e8":"#FFFFFF80","71c5452a-5f6a-4d61-b17d-07a6f2e2931d":"#FFFFFFCC","2117ee65-e102-4f1f-a8ce-8dedc0fe3bc7":"#FFFFFF66","c6ab8819-5277-4d19-bd97-2615a1ba9bf7":"#FFFFFFE6","4b800cf9-b5fd-4f14-9914-1663137dc03a":"#FFFFFF99","50a833df-7544-4e5f-9f2f-b2d4d00be318":"#FFFFFFB3","bb9ddd25-e43f-412f-bdfb-bb008d61d9b1":"#FFDE003D","ba71a5bb-21db-409b-8865-1568df07dfb3":"#FFD40063","3e0184d5-6157-4383-9f86-0136904ad4df":"#F8CF0087","05b62d57-b687-46f6-b81a-19a141f887a0":"#EAB5008C","31805781-a703-4a63-afa9-1e5d20a8b037":"#DC9B009E","433eeee3-4d81-429f-9c8c-f0d843316a53":"#DA8A00C9","7757b275-b6d6-46d7-889a-142df30d4e2c":"#008FF51A","e8b9fd5b-cd93-44c2-a186-bd6b1a842e57":"#0093FF3D","4a9cf385-c20a-4f5a-ac72-87d98d588f28":"#0088F654","c0ca871b-c907-4a1f-a3c4-3cacdbb0dfa2":"#009EFF29","9d917285-b08c-42f8-b395-bcacfe555eb7":"#0083EB70","c2747b51-6d45-4550-9101-9e6e58228eef":"#0084E6A1","ebc4e0f4-c83a-4d67-aca5-1ed2c40c248f":"#92250014","ce4e5705-42d2-4ee7-8a45-7b70976845d7":"#80280021","494c8d9f-efb6-4da1-8d5d-0e3874d3793f":"#7423002B","9ef2b9b0-cb57-442b-a85f-d16d3b17e556":"#7324003B","858628a0-d803-4086-8ead-e1fab34e1cce":"#6C1F004D","3a375502-38ab-4a9a-8d3a-d18063f237e5":"#671C0066","9a9321c7-2c55-46df-9c2c-fa7f95680c21":"#4C150096","ee456125-933f-484e-9fc2-0a4f0aca235f":"#551A008C","923ab07d-dde1-4129-9edc-eab0223748d0":"#3D0F00AB","786982dc-a98a-488a-8c85-dbc5219dd18b":"#9B4A0026","4dfae427-a4d8-4c74-b4f4-17755508c253":"#1D0600D4","670fe199-9fa7-4cd9-8de3-029afb9cf536":"#A04B0017","272b42bd-023a-4dd2-9419-8bb8d84cf9b2":"#9F4A0082","932ab9d1-d16f-4c78-95f2-ed70ba1f1908":"#9F4D0036","0948baac-3238-4b9e-82b1-f98683c1c000":"#A04E0047","78c3f1ad-455a-4290-851a-93a13b670e64":"#A34E0061","622a464a-407c-4170-b42f-799370afe791":"#723300AB","3fad6fe7-c4a1-4ec8-a06b-a1f5ebc1d902":"#823C00A6","e91accb3-5921-4ba4-8a80-ec2e32629071":"#522100BA","4700db50-fba2-4ecd-adbb-811f04048499":"#140600D1","0d9350a8-25cb-4f30-a84e-97af0e0fb71f":"#FF005217","416ced0a-385e-45e5-b56f-d4a81d72035a":"#F8005124","3a6599cb-6208-4fd8-9f42-4a6c7e759702":"#E5004F30","3237d1e9-7bba-4a78-b048-14664a2ebee4":"#D0004B40","5964f5d9-42a9-4e33-948b-9953bb618105":"#BF004754","6afb96cd-88a5-43f5-a632-8860603cfff1":"#B6004A6B","e2ee02b6-1cd8-45ad-8017-9551a1f01c36":"#E2005BC2","8e70faeb-d780-4e1b-95e9-35cca3bfcfa4":"#D70056CC","beea05d5-bb7c-402c-b023-b3c7db4f8d39":"#530026E8","e52810a5-afd6-4499-bfe2-5cc1749c199b":"#C4004FE3","c2233fb1-2f05-442f-93fd-5c78e8e0228d":"#fefdfb","16eec6c7-1f81-4a99-928e-451ed289773f":"#ffee9c","2ab3d9bc-f72f-4ada-af9a-52a84ba168e6":"#fefbe9","d93879d7-f88c-4e55-82c1-e7a132dbd698":"#fff7c2","d802b2fe-0099-415d-9405-21532c985d36":"#fbe577","7975774a-7be7-44e1-9c08-e2f0ada619d7":"#f3d673","895f49a9-e43a-40ba-9116-2d38690666a6":"#e9c162","92bf4d72-5a0f-4e3d-b341-7fa4ec149aed":"#e2a336","1b358951-e226-4fe4-a2fb-ee97a6134dfe":"#ffc53d","65706247-f5b9-40c5-bc61-e95b8024d605":"#ffba18","b00b897d-cb0d-42d8-9d37-51df7561ec69":"#ab6400","33cefdaa-e38a-4214-858f-b53be32027c1":"#4f3422","c2d2c4c8-15db-465d-af67-e4e56781754c":"#fbfdff","84c0417e-0085-4698-8558-a3a7eba75ff2":"#f4faff","51ce7bb0-e39f-4407-a2d5-5355af6129dc":"#e6f4fe","08fa4bc6-81be-4df2-9782-494b85262132":"#d5efff","ee175c44-39e9-4925-8a13-ed57f9dd451b":"#c2e5ff","b55f7b72-4b8d-4150-a197-d05ee9547840":"#acd8fc","6cafdf20-d507-44c4-9096-a7a56b2d4fd8":"#8ec8f6","354f5372-5131-4b7f-8bc8-80ca46c2c1ce":"#5eb1ef","17d5814e-a7d1-4e3f-939d-c6ada748d1dc":"#0090ff","838a82ff-794d-4470-83e6-fed319a530eb":"#0588f0","7f75e202-a38d-496f-b22b-854d2b32a2c0":"#0d74ce","2e060504-cf7d-4c46-b553-0dbc8ff0871a":"#113264","20a2a891-043d-4c92-bb68-f794b381665a":"#FDFCFC","1b39e5a2-a676-46c1-b96a-ca4feb66b387":"#fdf7f5","0714a36e-fd03-4470-bfac-4705fafdf390":"#f6edea","e3c07c19-b09f-464a-85b1-880afd903c81":"#efe4df","208382d7-8a32-4d48-a3dc-ae76ad1bb058":"#e7d9d3","5568748d-d523-4cd1-930f-6b6a5a595389":"#dfcdc5","f4d29838-7ec9-4513-85eb-81a20c252a0e":"#d3bcb3","e21c4af6-0c22-4446-9caa-8bc3d7ef3dcb":"#c2a499","2c7cf9cf-1dc8-4883-9c93-f20960faaaca":"#a18072","59869423-7524-4931-82f3-9e85a1d4d3e4":"#957468","a808d262-dd8c-4ada-85be-1ea91b23273d":"#7d5e54","04739fcc-8f5b-4f68-beea-9f4de6403900":"#43302b","cd45d047-ad2c-4b30-889f-19f00cadfd40":"#fefdfc","a9a4d3dc-1c21-4294-8bb0-fbb2b02c2c19":"#fcf9f6","d4bc2cdf-0540-4c0a-808f-bd0eb8445633":"#f6eee7","f353a7f6-69e7-4ccc-9fa2-19cde7d8c2ff":"#f0e4d9","b4869daf-9aef-41e4-a7c9-a41f5fde553e":"#ebdaca","2a3201c3-c5b2-4711-9728-452719321a23":"#e4cdb7","b65a1078-8922-4467-9360-2be790e12f2a":"#dcbc9f","4bcd9b73-4971-40e1-883d-0380d5c7634e":"#cea37e","ae7cde8d-6199-4c46-8248-6b60e74f6c3b":"#ad7f58","efd54f9f-5dba-4e3a-9835-06a35bb7806d":"#a07553","1b3a0981-15de-4530-977e-105a3bc8a857":"#815e46","326a2913-8d51-44a7-81e2-a8ddc0a00039":"#3e332e","74ca994f-f050-4fce-bf74-dcd962e157d7":"#fffcfd","a9bb656e-0078-42c5-8d7b-e4bf57fe1f45":"#fef7f9","104d683e-7a60-43ef-956d-5c2bae1f7e05":"#ffe9f0","522b1b0f-369b-43d2-ba32-ee2430224b27":"#fedce7","2543bdae-08d2-4647-ad68-d6155bf04c91":"#facedd","4082f64a-31ba-4f19-a2fc-468eadcaafec":"#f3bed1","ed8b0ff8-13e2-4fba-b375-e767145cd33f":"#eaacc3","837d9127-e706-43f4-b1d4-c1f3ec0143f6":"#DF3478","30efdaca-0762-46da-b024-2fa8a1010b54":"#621639","4f74e730-0f99-4389-b46a-f82a0feaed1d":"#e093b2","7e1e3578-9d68-48a3-a09f-5367a3e1991c":"#e93d82","ecccaed3-91e0-417c-bb77-3aad209d2991":"#cb1d63","42bd0031-52c1-4e60-94fd-987ba8bd3c41":"#fafdfe","6aa2f491-8920-4398-aa99-64b1ae1bef8c":"#f2fafb","8aeca44e-737d-4b64-8e01-3f86909a3ea3":"#def7f9","0c3156cc-2a22-447b-8574-e9e111435137":"#caf1f6","eb883ed9-5165-4a4a-9e85-f8178090e7ad":"#b5e9f0","27b45936-d25d-44e0-8f8f-5c427997ca03":"#9ddde7","0f01cc5a-3258-4098-bff9-da8b46a8594c":"#7dcedc","91aaa4f1-136a-4a43-b95d-dcadc9581fc2":"#3db9cf","01f770c1-033e-41aa-a8d2-a09fda89af2c":"#00a2c7","9f786265-05b3-44ca-9d81-cbbdfee723c7":"#0797b9","765fde44-4b58-4eb2-b9a9-00981dcf7723":"#f5fbf5","c47da7f0-1f70-46dc-a638-694c0f4e2c7f":"#e9f6e9","c77446c7-3276-4898-a84a-50f8fba15c51":"#107d98","50d3f684-4078-4424-8bfb-854a2ebccb38":"#0d3c48","55838f21-33ff-489a-a1de-8029087db1aa":"#fdfdfc","5f70a507-6d04-423c-9731-364fa31b2dd1":"#faf9f2","0c5ef889-26d9-4c5b-af8f-ea2405a8d7f4":"#f2f0e7","24921040-e189-4861-b683-c55a11cb9b81":"#eae6db","4af5d186-e092-40fe-8e0d-87c31aef55c6":"#e1dccf","15808f5c-7c6b-40ad-9831-be29f4315fa3":"#d8d0bf","46fa4345-9005-435b-b95d-a3cb541bb7df":"#cbc0aa","04d75611-1fe2-4b6f-b8ae-f724804129a1":"#b9a88d","68322b9a-5051-4b10-9f5c-43eab101ea3e":"#978365","05027f9f-243d-4ba0-9c89-8c9aa1edffcf":"#8c7a5e","3cb56308-63b9-42f4-921a-dff6233e9bde":"#71624b","0d73ed46-5d88-497b-887f-9f3d9d6d5810":"#3b352b","e7b6d9a5-cf5b-490b-8e5f-200daeba0bad":"#fbfefb","375c6b58-341c-4b0a-8212-3ca6d6481c1b":"#daf1db","ffe3e245-8669-45c9-8822-28ce5d3670c3":"#c9e8ca","6d584657-1830-4fb4-b028-dfb44edbf9b1":"#b2ddb5","a8c93299-3830-497c-af27-bbcbb5be6ec5":"#94ce9a","612e26c2-1a14-4e75-b155-173c24e81fe8":"#65ba74","9c79e108-7fb7-4625-807f-9aaba546a80b":"#46a758","c7c94f39-47f9-42ff-8e31-5efedc46af12":"#3e9b4f","8f4adc67-895c-4615-930e-77d2b5d1ffdc":"#2a7e3b","9cd87b3a-f5b3-4749-be53-f85cd1e68fce":"#203c25","0d430d75-bf7a-4ce9-96a2-178db7eb20b5":"#fcfcfc","a79fc7a0-f4ee-400c-b3e2-463f9d1c420b":"#f9f9f9","43cf1a24-f0e4-4d3a-9f77-7215b5ce2db5":"#f0f0f0","74cc5b39-1963-4ab0-a787-4fa362d2a770":"#e8e8e8","59bcc112-8d0a-49fc-8f2d-eb808b9bc04f":"#e0e0e0","8cf785cf-1184-481c-88d6-e13d1746b612":"#d9d9d9","2a1d2c43-89c8-4fe4-8acb-bd3e5180bb6f":"#cecece","c7a66dde-082e-4af0-80a2-0d4b1b61b84c":"#bbbbbb","cad04fea-720d-4cf0-8a66-983761d2a91f":"#8d8d8d","e8cc48a0-5f8f-4718-b221-c610342a40be":"#838383","19866980-960a-4e14-93aa-fff87f5b0b1f":"#646464","010656a8-fea7-400a-8b57-43b84b0c637f":"#202020","c2c802a9-afa9-4a0f-91f6-a1ac6f768c5c":"#fbfefc","9ec4c490-2bdc-42f5-aec4-22131a0a9c15":"#f4fbf6","0d2a6d5f-6724-45f5-9c51-2e60cb8511c9":"#e6f6eb","561616a0-6ae1-42c0-9c48-9f9cb9e1fa97":"#d6f1df","8dbfde6f-d8d7-43af-bf84-f7825cc537c1":"#c4e8d1","e6439f51-de97-434f-805d-980c1a16bc62":"#adddc0","e160370a-c8eb-44ec-a888-617c513a31c2":"#8eceaa","90dbeec7-697c-4729-897d-7ef807c4288e":"#5bb98b","aad3871f-f0e7-48d5-80c8-12d53c171296":"#30a46c","76073bd0-7b7e-485a-91e8-12ff6010a427":"#2b9a66","b2e08ee2-192a-4128-a54c-5dc1e57c7e07":"#218358","6b82f319-93d2-48b1-b9f9-161d9632ff11":"#193b2d","c07995ac-b84d-4686-8a52-c5e6795da4b8":"#fdfdfe","2fb7f6f2-8247-44d9-8d63-91cb26658ede":"#f7f9ff","2a50775a-9053-4d89-be48-716c223d1762":"#edf2fe","d730c3f0-8c4c-48bd-99cf-a6d1142c120f":"#e1e9ff","f66c117e-3c07-4192-8a6d-07487f6631c8":"#d2deff","eb51564f-8fed-4afe-b550-91bb2e810a1c":"#c1d0ff","0a2d7e8e-2995-4b15-90a3-aff92644cc7f":"#abbdf9","5296df8c-7c84-4b4d-ba3c-fa452db1352a":"#8da4ef","2d878668-f1c7-44c3-a669-ac85e50fb514":"#3e63dd","20ad32d9-8f9c-4bcf-9865-21ef4ffd1d48":"#3358d4","799598cc-0b59-48d3-83bd-3f04691d9c05":"#3a5bc7","7c36beb9-a1c9-4ef8-aeb4-3e0895f98b74":"#1f2d5c","922f6539-17e1-4021-859d-0280da9b205e":"#FAFAFF","0bd47d21-152e-48eb-b2c7-525b769ecc95":"#f8f8ff","5cd09ae5-fb6e-4f8c-973d-afdf20cd6a98":"#f0f1fe","a4914759-fe42-4731-9d66-82948141bb57":"#cbcdff","0cbbccf6-cc10-4e93-85b3-f81ed55f8934":"#9b9ef0","0700eb6b-bce4-42a3-afdc-69be4eced602":"#e6e7ff","06f44fb3-1d57-463a-bee5-45ab9a1eef85":"#b8baf8","6c2011aa-00b9-4b9e-a7d8-fd4571bf0536":"#5b5bd6","f11d7df4-4c50-47f0-b5c2-7afed8e7a002":"#acdec8","554d595e-ab6d-4026-94fa-1b769349e217":"#eef6d6","6e5baeb1-3016-4fe2-9756-6e7e461286fd":"#5c7c2f","233338e8-a6c6-41af-9d91-fc03fee5b6b1":"#37401c","6e3f0730-5893-41d9-ad83-5d3c17d5bce8":"#dadcff","c368fd8a-7b9d-4dfd-b704-c57df189186e":"#5753c6","df5ee5b8-3053-423b-bc6a-09bf6872154e":"#f4fbf7","4b455f81-41ad-49c6-971c-acf558f03c41":"#e6f7ed","10590158-0ecc-480d-9821-a67d3031d055":"#c3e9d7","afca643a-5675-43f4-9bd5-f36e6a7d41b4":"#d3e7a6","8d687444-5dfc-44ed-9c98-9e1d87fa592e":"#5151cd","c584b28b-fd92-47ef-a677-cc04229f23b3":"#272962","01de2c52-1216-4384-b47b-db3701d0630f":"#d6f1e3","50c32a67-d9c5-40cf-9ad2-723172897207":"#8bceb6","4342c624-ed3e-49ce-922f-f50902667636":"#26997b","963924a1-2c69-4ba4-a570-9adc8d76d50b":"#208368","f38abed4-9aeb-419e-91f7-887fa7897010":"#c2da91","75bf66c8-2978-40b8-bea0-80de3a07e825":"#8db654","8f871043-0432-4709-a3b7-47674de8106b":"#b0e64c","9ba5264f-1337-4450-9093-8443a773b468":"#fdfcfd","6b138d7e-6bbf-4b64-94b7-a8ba0e157d76":"#eae7ec","ba22830c-06b6-4fc6-a887-d222946ab9fd":"#d0cdd7","08d1248f-d264-4ff5-a88c-3e9da0f521c3":"#bcbac7","fa55287e-04d5-44aa-9b79-c7de9bbf8971":"#f9fefd","aa9baab9-bb91-4ebe-a243-f68298569321":"#4cbba5","078a2e73-b34e-429f-ba56-c8a262531bb3":"#16433c","191745d1-986b-4a85-ab1a-32e70af82a24":"#cccfcc","d0d47219-db38-440c-a73e-5ab0578791da":"#f8faf8","bd57d145-81e7-4f5b-baf0-4126e6f75b2f":"#1d211c","ff7a8e19-07c7-4040-b50c-56bccc7a5313":"#fbfefd","48377ba1-6bad-4767-a524-b86cc5dbb3b5":"#56ba9f","aef8b672-b90b-42d2-a625-635ecadad1f3":"#29a383","80ad40e1-e000-4783-a0d5-33efb775cb74":"#1d3b31","e821e737-7b58-4b25-a03b-1a2dc63a5f94":"#fcfdfa","1379d5bc-ab24-4b23-8f0e-f51fc1c9e8ab":"#f8faf3","0c5aa51a-5bd2-4a76-bc97-8bb197a2aa08":"#e2f0bd","74c766ba-f66a-494d-b5db-24e8902638a9":"#abc978","9f7e7953-fef9-4300-be4e-cb0c9aa81a5b":"#bdee63","fc9ca1a9-b057-4cc4-8218-f858807b3b39":"#faf9fb","babd9a0c-8b2f-4d6a-81cf-cb08b632ddb5":"#f2eff3","ee69d1a1-5614-427d-bc26-6a9095edbcce":"#e3dfe6","01736248-30b1-4939-9419-f94dc1149c7a":"#dbd8e0","d3431a76-e504-445c-aa55-15cb3d47e21c":"#8e8c99","792dc169-52dd-43f3-85f0-2a6dae156e65":"#84828e","15de3f36-98b0-49a1-a55b-fa378409c245":"#65636d","deec0f76-b15b-4e73-83eb-bd2b79a86037":"#211f26","e7c92b0d-be94-4a2d-a5ba-16ab83b0e6c3":"#f2fbf9","546aa468-9a53-434f-acc2-9961fb371ea4":"#ddf9f2","1d0a5221-96fb-457a-8b0f-b537785d19e7":"#c8f4e9","8adb7ce3-9710-4876-ad4c-44e0916fb266":"#b3ecde","08b23ccd-1fac-4986-af13-aac97158848b":"#9ce0d0","658bdb64-6559-4ef7-91df-0ac1178b9cee":"#7ecfbd","98836466-a1b7-4ec1-9ac4-7de6bc78cc1a":"#86ead4","a962b5aa-72e0-4fb0-a233-d95c8bc0fcdd":"#7de0cb","9e50bdca-be80-4eef-ad09-16b4c31346cf":"#027864","12fd55ad-855f-4807-93ac-ec83a6cdccea":"#fcfdfc","7a4e6d48-a158-4d26-be4d-41bb993290ed":"#eff1ef","40401cfc-50d4-45c9-b05b-05440559188b":"#e7e9e7","3c19afcd-f5bc-4783-bd52-e027c207115d":"#dfe2df","93eb9d88-1bd4-4578-b82f-95b9c3878246":"#d7dad7","4412cce1-5990-4395-987c-a09e44efaeb4":"#b9bcb8","11d00aed-48cc-419a-9925-843b7b58668d":"#898e87","ad037fd2-7f22-43dd-9190-8ceab5b39f6b":"#7f847d","1a4388f9-7098-4646-b06b-c661446366f8":"#60655f","b31e7cda-6eba-4a8d-a1bd-799f07c21e76":"#fefcfb","588b56b2-7149-4712-9ee3-6690e6fdfff1":"#fff7ed","ac5471d1-6464-4292-ad80-98bc840ad8ff":"#ffefd6","b625a68e-a7c9-41b4-8525-ec76ec5e7c87":"#ffdfb5","5f6e5433-d4f4-4462-a1d6-ae2b3de062c3":"#ffd19a","f2faa1ea-eec5-415f-a189-2598746063e5":"#ffc182","61c378a2-51d8-4514-a84f-37f2aef49542":"#f5ae73","4b2e4515-541b-4558-a348-eb0a52ff92bd":"#ec9455","2c9be5cd-3ed6-49eb-a473-bb577b9a48c7":"#f76b15","57f35cc6-0385-429e-b148-402ebcb240c2":"#ef5f00","33563e9e-a732-4a62-9b27-02a816a0a4f3":"#cc4e00","686180ec-b1ee-40a9-ad70-f3569b6e141d":"#582d1d","b7905d2d-7619-438d-a86c-85bab20a155a":"#e7acd0","f594660a-8088-4d72-ae64-cd31a5f1f44c":"#fffcfe","b845bdcb-739b-4d13-a761-c18ebb54040a":"#fef7fb","7efea7c2-a24f-4871-83a7-4220484357c9":"#fee9f5","942a0cd1-763e-46bc-beed-b3ef03dd7dff":"#fbdcef","29552817-258a-4b4f-820a-1d8ef0ce2e88":"#f6cee7","0f6a16fa-9053-4fa6-9869-2f677425fca3":"#efbfdd","a329b311-a15d-4347-a029-fbdfde400e7c":"#dd93c2","26b421ef-3dd9-429f-a60f-3f935fbb4ebd":"#d6409f","89c2bbe4-4481-47f6-80d2-5879a29535e8":"#cf3897","c3e1e747-2210-44c0-9feb-1f7012a8ef86":"#c2298a","9b7122cd-1f3b-4916-809c-fd5e591bdaa6":"#651249","114a39fd-c54c-402a-8b7c-1726188693ae":"#fefcff","1eb76165-67b1-4453-81b5-f01be0e78d96":"#fdf7fd","49d6d764-4043-427b-b598-aac9b868d74b":"#fbebfb","75af7f72-8330-451c-84b0-3a43077c97c6":"#f7def8","680a6caa-913e-4265-9fc0-54c49bea7df7":"#f2d1f3","5e18a9f2-ca66-4b84-8ada-6dfed0c7b3d5":"#e9c2ec","ea98a857-9c3a-4da6-b7e7-bd11e0e0a720":"#deade3","03defa73-d811-4859-841f-288df1c6a40d":"#ab4aba","fcecb1cb-1676-4988-b1c3-a739d2629c18":"#cf91d8","106c645b-5afb-4346-b0f8-b8f1e2d7bf00":"#a144af","b74d5204-adbd-4c4f-ba7e-300a0f7d5d6a":"#953ea3","c668fc4e-a868-460b-b47f-ad3931e7ca02":"#53195d","9ac26069-80ae-4f49-ba57-59048b161fea":"#fefcfe","6a58808c-c1d0-4409-a218-db49287504f9":"#fbf7fe","7274cf36-63c3-442a-9bca-8edf314dcc2c":"#f7edfe","81582944-8dc0-4937-80b9-932db1eb76e5":"#f2e2fc","ca42f18e-2422-47f1-b0ed-5a0b91c4365c":"#ead5f9","0856913e-2f99-4ac9-90ef-99f079907993":"#e0c4f4","5c40fb79-3c6a-43e6-8d20-24834cb12f32":"#d1afec","5e2a73f4-b745-42ea-ac32-e2a128413470":"#be93e4","e7c44a12-2319-4e16-a0d8-aa7ff458d8d1":"#402060","e378fd8a-45e0-4e08-b7a6-71402129b723":"#8e4ec6","246fe3f4-c5f5-4ff6-87da-10e2d5913293":"#fffcfc","a0703809-03c3-4c51-8e12-6b76aa59ec76":"#8347b9","96263c7e-aa69-41e5-b696-2170e5029e15":"#8145b5","97526226-77e6-4ce5-8b16-09f6467e1b90":"#fdbdbe","52ec9f12-39b0-4f55-8b83-23fabbb350df":"#fff7f7","eb3a09d7-387b-4291-a42a-42b1cc8a93e9":"#feebec","56577e56-deb6-4f92-96ab-15a7aac1d271":"#ffdbdc","1367d44a-efaa-4627-a7e5-b152e221a5a6":"#ffcdce","67af1d52-69bf-47e7-ad27-4cc130a7d505":"#f4a9aa","fb249d9d-977e-45d3-b522-68d4362bfcf2":"#eb8e90","474f243a-8269-4cdf-8a6a-fdb6a20c81a8":"#e5484d","ddf2650a-74d5-4c64-aa85-a9422d9ad3a9":"#dc3e42","335d0c48-b7e9-44ed-82b1-157ef64e07df":"#ce2c31","04a399d2-a708-4a6f-9fad-22a7cfd5d252":"#641723","7f68b8c1-48ff-4278-847c-82e7aa3e5e53":"#fffcfd","190b423b-87de-4918-8c6f-c0d7ee1b1a57":"#fff7f8","f243000d-7de4-4996-9e99-a7e4ac47b6fd":"#feeaed","175c0340-b6e3-4d30-85ea-db29f94d5765":"#ffdce1","8270eadd-5be3-41fc-8784-ab466f7f590b":"#ffced6","89d4b468-e65f-4545-9ae6-2445729fd0a6":"#f8bfc8","664d6593-21e7-4faf-98cf-46be0be88eaf":"#efacb8","bd0017d0-af27-4ca1-95f0-50ce447d5446":"#e592a3","5f70b10b-9db0-41be-b6b1-7c7a2c37ac13":"#e54666","bdaa28d8-fd8f-4214-aac8-459615747466":"#dc3b5d","825b1af1-d8b2-433c-856b-b9e69fcb33ff":"#ca244d","c27f2d1a-a576-4e07-be3c-9161ac568979":"#64172b","628727de-b4a4-44fc-b125-71dd48c41a14":"#fbfdfc","1dd8eb27-3bf4-40d2-a71e-cef34673eadf":"#f7f9f8","8795c841-c8e8-410b-af14-54b270ceeec0":"#eef1f0","097975a3-1e78-46d7-9bb4-5805b9fed7dd":"#e6e9e8","0922688a-56f1-4f39-9a2d-20da2f9dfad3":"#dfe2e0","6e35a76c-5aa9-4ad0-be01-d79281df6aaf":"#d7dad9","22dc7225-a86a-4596-a67f-a45962dbab18":"#cbcfcd","4b96f801-9175-4100-a93e-b6e3d58590d8":"#b8bcba","4f399f8a-f7b4-4c87-bab0-e2380710158a":"#868e8b","91f49010-4e4d-4041-b145-d4a9ea3fed7d":"#7c8481","c4947a25-9c3c-4bb5-9499-63b1e632d962":"#5f6563","6cced9c2-594f-4fcc-a293-db25698a2f6d":"#1a211e","25502bce-7d3b-4f3c-bf8d-928f0c64ab1d":"#fdfdfc","09024f1b-ae20-464c-9662-ae8c5159c850":"#f9f9f8","fdc32f5a-8958-48f4-bfe2-6d874c720dc7":"#f1f0ef","c5720e2c-9ae4-4926-8a2e-be86942e653a":"#e9e8e6","56d5abe5-fc2d-445f-ac49-cdd02cbd3b1e":"#e2e1de","5800fb14-512b-4811-a629-af1e15ab9aa6":"#dad9d6","699b6205-5310-4722-8016-9536049e2553":"#cfceca","bd493529-7360-4d2e-9a51-153c43d987ad":"#bcbbb5","a160207c-84c3-4f7c-bca2-9bd1f8efd991":"#8d8d86","2f6e1bee-09a2-4764-8312-8bfdd83db34d":"#82827c","497445c4-c9f1-4d8a-afd7-4fbcc14b16ee":"#63635e","cf6f4bbc-3852-40ed-a080-066f1aa0f409":"#21201c","d8fcd38d-f5e4-4b58-8d03-6de925dce618":"#f9feff","266e4cd0-ca31-44fd-afba-151820ac2824":"#f1fafd","2e4abeca-0bda-4f75-b46a-65fe131c6556":"#e1f6fd","44220383-00d2-4b2d-80e3-073c6830af65":"#d1f0fa","c1fea308-46c6-4ee4-be71-b9faabf2b1d2":"#bee7f5","274f6ecf-3a1e-4ba1-9710-eb1df725f57f":"#a9daed","f8ff82e0-75ff-42e1-aa9b-6a2c9f3ddf4f":"#8dcae3","85dbac70-4a30-4d33-afea-55597d9f4f8c":"#60b3d7","51cf14c3-7bd5-48db-b889-b738883c2009":"#7ce2fe","506a934a-5999-4202-87c0-3660a4549245":"#74daf8","2d3e31fd-1651-4b66-9bd2-d33fb2848af0":"#00749e","c54c9c11-1478-413f-b424-489115c5c3fe":"#1d3e56","a6b2ce2f-d563-44e3-8b13-aee9ea658f4b":"#fcfcfd","f98a48cd-8423-49a1-8420-ea99e243eb78":"#f9f9fb","2e4a46ea-d23e-47af-8de5-2012141d4e13":"#f0f0f3","50ce7b2d-eb45-40b9-967c-6b3700298240":"#e8e8ec","196e91a8-031a-430b-89f9-46cfe2217249":"#e0e1e6","893caf1f-0499-4706-bfb4-70d0acb7b5c1":"#d9d9e0","51440870-1909-47ba-ab5d-1782297c4153":"#cdced6","3e1e278d-17d7-46f3-bc88-af5d4e4ba497":"#b9bbc6","e3cb9fde-bc76-4f9e-a3a1-de4dbc80aa09":"#e0f8f3","03d8ab36-6dfe-4dc5-832b-fa2ab2e3d7f1":"#ccf3ea","1418e5d4-fbbc-4fb9-ae46-91ebca6695f4":"#53b9ab","1c9361fb-04c6-4be6-b6cc-f229c8e1a278":"#12a594","ab2eccf5-7b70-47cc-a7a5-994b59aca176":"#0d9b8a","94ab5095-c320-4454-bff5-471054eb4953":"#8b8d98","fb7fab79-6a16-428b-ad7a-abb6401b493e":"#80838d","58034fe7-2062-4a36-b0ed-1bad29e29970":"#fafefd","359b9afc-3a8d-48b6-9fc3-f88811570822":"#60646c","c1e37bb6-ea23-4603-bd39-3cabc2b69ec2":"#f3fbf9","2da3ef48-4a69-4119-a5bb-da96e767948d":"#b8eae0","879248ca-0d25-4e6e-9ea8-77fc4be2d326":"#83cdc1","d82cba99-7253-4a3a-9b64-7835ae679ff2":"#fdbdaf","ee62e695-1d22-4ca8-8c98-bb0d74d76603":"#f5a898","f57bebb9-bdd0-4286-82a5-7e32b71c1d77":"#1c2024","416506e4-c442-46b9-9056-170edad2a259":"#008573","a8e1776e-c6be-4bce-9b08-5ae13c7ecc6c":"#0d3d38","48adff8b-ed15-4c4c-bda9-e889b537bbcf":"#a1ded2","a78da67c-bc16-4c41-a0e9-2c69331456b1":"#fffcfc","ec236d0f-8e40-445d-9e9b-c3b91f8e7388":"#fff8f7","247cdbc6-802d-4956-a27b-6590c1230fb6":"#feebe7","a5329ff0-b07a-4c6f-b1de-7a46a1491b41":"#ffdcd3","96f5f884-6e75-4a8e-a750-8bd038e6841e":"#ffcdc2","084c892d-ad79-4dca-aeae-e664d3d4ce32":"#ec8e7b","61099aa0-9f17-4e21-82d2-4c94c6e4e6d2":"#e54d2e","f4c2f501-6c06-47ca-890c-28f5eb5ea266":"#dd4425","cb438986-55c5-4a91-b71c-fb84944d463f":"#d13415","ff011285-31a2-46cc-b654-56710852bb1f":"#5c271f","991eeae8-b73e-4ed1-a05e-05fff48d0e28":"#fdfcfe","232ada1d-f77d-4d77-bef0-238d0a3b7808":"#faf8ff","7464757d-2b98-44cb-90ee-1be813e73a87":"#f4f0fe","4b27b6ef-ac70-4b29-b0cd-847e0554af06":"#ebe4ff","f03758ed-e275-4064-938d-5e5b62d7215d":"#e1d9ff","231e33d9-1430-4aa3-9931-6a3245fc1664":"#d4cafe","b185465c-d1d8-4a32-82db-3a13cf465186":"#c2b5f5","5a95a472-a8ce-4e57-afdf-780c0b0c9ba2":"#aa99ec","66187263-ac87-403b-902f-7c2edd9dbad1":"#6e56cf","64f73f09-aada-48ef-9586-fa9b3d8a2ef1":"#654dc4","b3b7689a-fec7-4049-a672-7fb17aeb9507":"#6550b9","df0b645e-bca9-46f2-907e-6181de62fc9a":"#2f265f","2717d257-145f-4ec8-b760-49376b7b3576":"#fdfdf9","361747f8-b96a-4ac5-bff8-b0536cf54b33":"#fefce9","b91b555b-9c52-4936-89e6-6a62b98c048f":"#fffab8","37dd9254-8f72-4388-98ab-b0b9f669831b":"#ffe770","14fdb348-3ec7-43a2-bef1-c6d1c3bd777b":"#f3d768","fc3713bd-7212-451e-a3fe-35afe32325dc":"#e4c767","47159f15-97d2-4563-8908-3538fc3cb4c3":"#d5ae39","20e749b4-ef0f-4cd3-a8cf-45190141d82b":"#473b1f","80c79f56-e61d-4286-a672-51149bc2496d":"#fff394","865b3eb2-c4e4-4b80-99f9-74532e61f7bb":"#ffe629","3b7942b5-94a9-4339-b680-e384d360288f":"#ffdc00","6b377059-06ca-4b11-a274-457e5cd028bf":"#9e6c00","729c511f-5dd0-44d1-89ff-a3f77d8c5d98":"#C0800005","7429ced8-2484-4af8-9693-55dbaade3994":"#F4D10017","4c82869d-31d0-482f-b91a-2e0601f7f9d5":"#0080FF05","0c3eb0a8-d935-480f-990a-d5f0429ca9b5":"#008CFF0A","efc575e8-2d96-4a20-a937-16c45edaa914":"#55000003","0d68d22e-b3d6-43df-929d-26fde968fbfd":"#CC33000A","bc5575e9-a458-4ee3-822c-85d2f9240d9e":"#AA550003","c8d5e384-31e1-4de3-a53c-9aa46bd54629":"#AA55000A","d1d21876-aac7-4376-9ca4-6931ad4f52a5":"#FF005503","118f0161-bdc5-4e7a-938a-c88e77bc3cd5":"#E0004008","0a1be888-d58d-4d03-a22b-88445e473998":"#0099CC05","16b13b1e-1cb0-4699-96bf-281f5a749624":"#009DB10D","e9cdfa8f-2b4d-4eec-ad79-aa3e5712a39a":"#55550003","846eff29-41c8-4a7d-9ebc-591001073ad1":"#9D8A000D","12794ef8-bb0c-4050-8868-4fe28aeb91bd":"#00C00005","9632f9a7-3034-4724-a6c5-0f9dac59a2fd":"#0099000A","120b36fc-6688-4402-8ebe-67ecce921472":"#00000005","670b07c4-9ed5-47dd-9219-f30e5585f228":"#00000003","5a7b3dac-5cde-4af0-83b6-aba562bfcfbf":"#00C04005","87ecdeeb-c3d1-4ded-9a19-50096f5edab7":"#00C04005","3e31012d-30f9-482f-9f57-2a99d480b9de":"#00A32F0A","9a61edd2-e53a-4a64-9414-b08ac41ca73e":"#1133FF0F","a20543f0-0779-4038-921e-a0cad99f0c46":"#0040FF08","ef9eac95-d2bd-4ec8-9df7-1b362a652e38":"#0000FF03","ab4ed840-0829-4ed0-91ae-a81a54308841":"#0000FF08","ee79a378-edaa-4a34-aca9-2ed13d012d6f":"#00C08005","fc8ccfa8-d433-426a-a4d8-65e8960d4399":"#00A3460A","ecef9028-c347-4ca7-b4fc-255037538117":"#66990005","f766e64f-a8ca-4f18-a47e-0d7c79fe1993":"#6B95000D","5df81753-e46c-44de-8e51-086307294a52":"#55005503","26210711-81b2-45a1-9ac1-a55b563b224c":"#2B005505","d8dbe784-4d46-4852-99ee-1bebe23f24ad":"#00D5AA05","f1bd2306-6777-40ee-8f5e-ede3d7977d08":"#00B18A0D","7d7e5628-f3b3-4430-a25c-baf4e67166ce":"#00550003","8db07d59-a55c-46bd-9225-aa81c5613a83":"#00490008","e3a0255d-313b-4e57-91e7-8e30523089e3":"#C0400005","6a597173-a977-4181-a831-afa9e0e308e6":"#FF8E0012","d42eb3da-b78a-4cdb-b334-a56bb1a37d47":"#FF00AA03","07ddd4a3-c8ec-48c2-aee1-247a35516079":"#E0008008","ae56fbf1-e5a2-4c22-82f9-fb185687ff53":"#AA00FF03","81b0c205-ba51-4915-9b21-3a829a2e0eda":"#C000C008","64539750-0e77-4ac8-ace5-b1dd92305715":"#AA00AA03","97dfec95-697a-406e-b503-946ad9a3d13a":"#8000E008","d54c8b24-cac7-4474-b515-df4451e16f1b":"#FF000003","3c3481c1-46d8-47c1-bc6f-171163b405f2":"#FF000008","9f0d0a26-d8cf-4342-8919-e1313a5787f1":"#FF005503","b2c56336-064b-4098-aead-b0e2d40da1e8":"#FF002008","71f48bfa-7294-4e2f-a723-45e36894ed93":"#00804005","f5bfb9aa-6ef1-475b-88b9-e37e60375d08":"#00402008","07b11abb-6b13-4769-a57c-f23032235fd1":"#55550003","cde5df5c-a17e-4ff7-ac16-3ebd09c21b3d":"#25250008","1504e652-8ed2-47f7-acb5-59dff9886668":"#00D5FF05","f4640116-2b81-42fe-a46a-cb60f7d5b576":"#00A4DB0D","47fe7cbd-7fb3-4a53-b28d-bff39dca7f7f":"#00005503","6a2363e8-2ede-4d74-92ef-180cd2b4ba7d":"#00005505","38236ce6-671c-4696-ad65-8089666c470b":"#00CC9905","98f76a8e-f78e-4f0c-9b52-ba6f0a09b23b":"#00AA800D","081f1f72-e236-45c6-8de8-ac4a271d3bbb":"#FF000003","7c9694a7-c3e7-4a86-bb4b-a9939afc05c4":"#5500AA03","96dd4c25-6979-46d0-afc1-7a121f101534":"#FF200008","e8b3e63e-8392-4ea8-9f80-52fc48a678e9":"#4900FF08","1ba65d7f-8a23-4579-aa20-763bc95344e7":"#AAAA0005","bfcd0860-7b1f-414e-8cfc-56625a4cbb12":"#F4DD0017","63fcfb03-e3bd-4c51-a12b-52a716ae345d":"#000000F2"};
+            /* wwFront:end */
+        }),
+        spacings:
+         /* wwFront:start */
+        // eslint-disable-next-line no-unreachable, no-undef
+        {"992228dc-776f-4d24-bf8d-1371b3592c7f":"4px","42076a03-9552-468f-af9e-a1a016186b04":"8px","571aae7c-c2ae-44dc-8f1c-0cebec845874":"12px","c8aec23a-224d-440a-ae79-ffd40a8f36ed":"16px","d061af04-f020-4268-ae0f-5a7bab63db9f":"24px","175ada0d-631c-4dc7-b386-e8d406ff555e":"32px","f741b6ee-2db5-499a-a52e-6b9da6dd686f":"40px","2dfbb71b-7f47-49b4-8ebb-43dc238df84f":"48px","9792c140-6f8e-4fe6-b1d7-72eb6d6d855e":"64px","a9788125-068e-4844-a965-d8c8cb706da4":"0px","08581bfa-4a61-4fe3-8156-635cdb627e3b":"3px","5f6d6673-43a6-4fa5-8235-f735423022a8":"4px","3445ead3-3098-4e61-ac5b-95ac85ab6260":"12px","77bfebcf-d9d4-436b-98cd-0fb9547ac15e":"9999px","267c8c47-9cb1-4170-80a7-361861a112bc":"448px","61e9eb1f-034c-4011-b416-03bd730e1c60":"688px","ead68433-0426-41d2-82e8-7c49e44d9ecd":"880px","a956169e-7baa-4ab2-8651-5eb1efa8a323":"1136px"},
+        /* wwFront:end */
+        typographies:
+         /* wwFront:start */
+        // eslint-disable-next-line no-unreachable, no-undef
+        {"e33fff17-7207-4b16-8ac3-c496734ec508":"300 14px/20px var(--ww-default-font-family, sans-serif)","4cc29557-16d3-4038-bf0c-c828f7a9ceea":"300 16px/24px var(--ww-default-font-family, sans-serif)","e6d50f86-dafb-45e5-9fd9-140034a8f479":"300 18px/26px var(--ww-default-font-family, sans-serif)","575d0e46-b32d-4db7-9828-a44d153cb415":"300 20px/28px var(--ww-default-font-family, sans-serif)","3c99b4db-0c5e-4ac3-ad70-78a231d11b62":"300 12px/16px var(--ww-default-font-family, sans-serif)","fb043936-905b-4c6c-af95-107c8e6ba52c":"300 24px/30px var(--ww-default-font-family, sans-serif)","dd32b483-ad93-4ff5-8f28-a74748277e89":"300 28px/36px var(--ww-default-font-family, sans-serif)","1c1d0c84-c2f8-40df-84a0-69f82d3648d6":"300 35px/40px var(--ww-default-font-family, sans-serif)","212a9f4a-abc6-4243-8edd-bf720846f6da":"300 60px/60px var(--ww-default-font-family, sans-serif)","c6209a3f-f51f-425a-960f-1517f93000c3":"400 12px/16px var(--ww-default-font-family, sans-serif)","fd0010b4-719d-497c-b16e-c59c84d8a749":"400 14px/20px var(--ww-default-font-family, sans-serif)","fe508038-5a92-47b7-88c8-77ec11f456f7":"400 20px/28px var(--ww-default-font-family, sans-serif)","f06fc427-d49f-4c90-844b-830625cb65c1":"400 28px/36px var(--ww-default-font-family, sans-serif)","02e01b25-888e-408f-90fd-ec9756116b68":"400 16px/24px var(--ww-default-font-family, sans-serif)","cdc57854-346b-4f3f-8dbe-0d0959d2c4d9":"400 24px/30px var(--ww-default-font-family, sans-serif)","9393e1c2-f3b6-44e3-85dc-4530a3b96d2c":"400 18px/26px var(--ww-default-font-family, sans-serif)","02e54b9b-36fc-4e18-8dbf-f2aad7744a90":"400 60px/60px var(--ww-default-font-family, sans-serif)","02391c3f-b3a9-4e79-adc0-d22e9dac196f":"400 35px/40px var(--ww-default-font-family, sans-serif)","7d24571a-1513-4788-9127-4cddf4af6516":"500 12px/16px var(--ww-default-font-family, sans-serif)","9194f424-be87-4f87-be6d-23c6c0463e86":"500 14px/20px var(--ww-default-font-family, sans-serif)","61b31d01-b838-4a89-936e-47b4c8d07ecb":"500 16px/24px var(--ww-default-font-family, sans-serif)","69212525-01b1-46a5-a7c4-0da231b99642":"500 18px/26px var(--ww-default-font-family, sans-serif)","3a2f8f35-8a39-43cb-9b8f-84b31cec3cfb":"500 20px/28px var(--ww-default-font-family, sans-serif)","482881eb-e1ad-4266-ad84-7e0ed7a253cb":"500 24px/30px var(--ww-default-font-family, sans-serif)","068035c9-dadb-4bad-9b52-97a1abb3e9d4":"500 28px/36px var(--ww-default-font-family, sans-serif)","a2b72a46-cc82-491f-9120-843f8f48588c":"500 35px/40px var(--ww-default-font-family, sans-serif)","874d3017-6270-4cca-baa0-20a02e85a0ef":"500 60px/60px var(--ww-default-font-family, sans-serif)","d4ef65b1-cb96-4429-8f54-d3cbf61aa27d":"700 12px/16px var(--ww-default-font-family, sans-serif)","a05efb23-0d6d-493a-9ec2-5a1bb75e555b":"700 14px/20px var(--ww-default-font-family, sans-serif)","093eb5c6-adfa-4989-b609-614bb6e469fa":"700 16px/24px var(--ww-default-font-family, sans-serif)","17dfbc32-ffb3-4d66-b82f-74c3d703fd8c":"700 18px/26px var(--ww-default-font-family, sans-serif)","9a10438b-fa53-4a7a-8364-cbc79c3a4191":"700 20px/28px var(--ww-default-font-family, sans-serif)","9e3a8179-fa5a-4ded-8c22-8e386ab67fe0":"700 24px/30px var(--ww-default-font-family, sans-serif)","91acabb9-a2d9-4fe5-9756-be6222391be0":"700 28px/36px var(--ww-default-font-family, sans-serif)","c4143ce2-a880-4d66-8e78-02bb18c7363f":"700 35px/40px var(--ww-default-font-family, sans-serif)","369a649d-697c-4df1-bda9-c16614cb41e3":"700 60px/60px var(--ww-default-font-family, sans-serif)"},
+        /* wwFront:end */
+        browser: computed(() => {
+            const router = wwLib.manager ? wwLib.getEditorRouter() : wwLib.getFrontRouter();
+            const currentRoute = router.currentRoute.value;
+            let currentQueries = currentRoute.query;
+             return {
+                url: window.location.origin + currentRoute.fullPath,
+                path: currentRoute.path,
+                // verify if auth plugin
+                 /* wwFront:start */
+                // eslint-disable-next-line no-dupe-keys
+                source: currentQueries._source,
+                /* wwFront:end */
+                query: currentQueries,
+                domain: window.location.hostname,
+                baseUrl: window.location.origin,
+                breakpoint: wwLib.$store.getters['front/getScreenSize'],
+                environment: wwLib.getEnvironment(),
+                theme: wwLib.$store.getters['front/getTheme'],
+            };
+        }),
+        screen: services.scrollStore.screen,
+        componentPositionInfo: services.scrollStore.componentPositionInfo,
+    }),
+
+    pageData: computed(() => {
+        const lang = wwLib.$store.getters['front/getLang'];
+        const cmsDataSetPath = wwLib.$store.getters['websiteData/getPage'].cmsDataSetPath;
+        if (!cmsDataSetPath) {
+            return { lang };
+        }
+
+        return { lang, data: wwLib.$store.getters['data/getPageCollectionData'] };
+    }),
+
+    getEnvironment() {
+        return wwLib.manager
+            ? 'editor'
+            : window.location.host.includes(
+                  // TODO: add staging2 ?
+                  '-staging.' + (process.env.WW_ENV === 'staging' ? import.meta.env.VITE_APP_PREVIEW_URL : '')
+              )
+            ? 'staging'
+            : window.location.host.includes(import.meta.env.VITE_APP_PREVIEW_URL)
+            ? 'preview'
+            : 'production';
+    },
+
+    useBaseTag() {
+        return (
+            wwLib.getEnvironment() === 'production' &&
+            window.wwg_designInfo.baseTag &&
+            window.wwg_designInfo.baseTag.href
+        );
+    },
+
+    getBaseTag() {
+        let baseTag = window.wwg_designInfo.baseTag?.href || '';
+        if (!baseTag.startsWith('/')) {
+            baseTag = '/' + baseTag;
+        }
+        if (!baseTag.endsWith('/')) {
+            baseTag += '/';
+        }
+        return baseTag;
+    },
+
+    /**
+     * @PUBLIC_API
+     */
+    getFrontWindow() {
+        if (document.querySelector('.ww-manager-iframe')) {
+            return document.querySelector('.ww-manager-iframe').contentWindow;
+        }
+        return window;
+    },
+
+    /**
+     * @PUBLIC_API
+     */
+    getFrontDocument() {
+        return this.getFrontWindow().document;
+    },
+
+    /**
+     * @PUBLIC_API
+     */
+    getFrontRouter() {
+        return this.front.router;
+    },
+
+    /**
+     * @PUBLIC_API
+     */
+    getEditorWindow() {
+         // eslint-disable-next-line no-unreachable
+        return null;
+    },
+
+    /**
+     * @PUBLIC_API
+     */
+    getEditorDocument() {
+         // eslint-disable-next-line no-unreachable
+        return null;
+    },
+
+    /**
+     * @PUBLIC_API
+     */
+    getEditorRouter() {
+        return this.editor.router;
+    },
+
+    /**
+     * @PUBLIC_API
+     * @DEPRECATED wwLib.wwApp.goTo
+     */
+    goTo(...args) {
+        wwLib.wwLog.warn('wwLib.goTo is DEPRECATED, use wwLib.wwApp.goTo instead');
+        wwLib.wwApp.goTo(...args);
+    },
+
+    /**
+     * @PUBLIC_API
+     * @DEPRECATED wwLib.wwUtils.getStyleFromToken
+     */
+    getStyleFromToken(...args) {
+        // wwLib.wwLog.warn('wwLib.getStyleFromToken is DEPRECATED, use wwLib.wwUtils.getStyleFromToken instead');
+        return wwLib.wwUtils.getStyleFromToken(...args);
+    },
+
+    /**
+     * @PUBLIC_API
+     * @DEPRECATED wwLib.wwUtils.getTypoFromToken
+     */
+    getTypoFromToken(...args) {
+        // wwLib.wwLog.warn('wwLib.getTypoFromToken is DEPRECATED, use wwLib.wwUtils.getTypoFromToken instead');
+        return wwLib.wwUtils.getTypoFromToken(...args);
+    },
+
+    /**
+     * @PUBLIC_API
+     * @DEPRECATED
+     */
+    element(value) {
+        wwLib.wwLog.warn('wwLib.element is DEPRECATED');
+        if (typeof value === 'object') {
+            return { isWwObject: true, ...value };
+        } else {
+            return { isWwObject: true, type: value };
+        }
+    },
+
+    /**
+     * @PUBLIC_API
+     * @DEPRECATED wwLib.wwUtils.resolveObjectPropertyPath
+     */
+    resolveObjectPropertyPath(...args) {
+        // wwLib.wwLog.warn(
+        //     'wwLib.resolveObjectPropertyPath is DEPRECATED, use wwLib.wwUtils.resolveObjectPropertyPath instead'
+        // );
+        return wwLib.wwUtils.resolveObjectPropertyPath(...args);
+    },
+
+    /**
+     * @PUBLIC_API
+     * @DEPRECATED wwLib.wwutils.getTextStyleFromContent
+     */
+    getTextStyleFromContent(...args) {
+        // wwLib.wwLog.warn(
+        //     'wwLib.getTextStyleFromContent is DEPRECATED, use wwLib.wwUtils.getTextStyleFromContent instead'
+        // );
+        return wwLib.wwUtils.getTextStyleFromContent(...args);
+    },
+
+    /**
+     * @PUBLIC_API
+     * @DEPRECATED wwLib.wwWorkflow.executeGlobal
+     */
+    async executeWorkflow(...args) {
+        wwLib.wwLog.warn('wwLib.executeWorkflow is DEPRECATED, use wwLib.wwWorkflow.executeGlobal instead');
+        return wwLib.wwWorkflow.executeGlobal(...args);
+    },
+
+    /**
+     * @PUBLIC_API
+     * @EDITOR
+     * @DEPRECATED wwLib.wwEditor.findParentUidByFlag
+     */
+    findParentUidByFlag(...args) {
+        wwLib.wwLog.warn('wwLib.wwEditor.findParentUidByFlag is DEPRECATED, use wwLib.findParentUidByFlag instead');
+        return wwLib.wwEditor.findParentUidByFlag(...args);
+    },
+
+    /**
+     * @PUBLIC_API
+     * @EDITOR
+     * @DEPRECATED wwLib.wwEditor.selectParentByFlag
+     */
+    selectParentByFlag(...args) {
+        wwLib.wwLog.warn('wwLib.wwEditor.selectParentByFlag is DEPRECATED, use wwLib.selectParentByFlag instead');
+        return wwLib.wwEditor.selectParentByFlag(...args);
+    },
+
+    /**
+     * @PUBLIC_API
+     * @DEPRECATED wwLib.wwElement.useCreate
+     */
+    useCreateElement() {
+        wwLib.wwLog.warn('wwLib.useCreateElement is DEPRECATED, use wwLib.wwElement.useCreate instead');
+        return this.wwElement.useCreate();
+    },
+
+    /**
+     * @PUBLIC_API
+     * @DEPRECATED wwLib.wwElement.useLayoutStyle
+     */
+    useLayoutStyle() {
+        wwLib.wwLog.warn('wwLib.useLayoutStyle is DEPRECATED, use wwLib.wwElement.useLayoutStyle instead');
+        return wwLib.wwElement.useLayoutStyle();
+    },
+
+    /**
+     * @PUBLIC_API
+     */
+    useIcons() {
+        const store = useIconsStore();
+        return {
+            getIcon: store.getIcon,
+        };
+    },
+};
+
+function pageSanitizer(page) {
+    const keysToInclude = [
+        'id',
+        'name',
+        'folder',
+        'metaImage',
+        'pageLoaded',
+        'paths',
+        'langs',
+        'meta',
+        'title',
+        'sections',
+        'pageUserGroups',
+    ];
+
+    const _page = {};
+    keysToInclude.forEach(key => {
+        _page[key] = page[key];
+    });
+
+    _page.meta && delete _page.meta.__typename;
+    for (const section of _page.sections || []) {
+        delete section.__typename;
+    }
+
+    const lang = wwLib.$store.getters['front/getLang'];
+    if (_page.paths) _page.path = _page.paths[lang] || _page.paths.default;
+    else _page.path = null;
+
+    _page.lang = lang;
+
+    return _page;
+}

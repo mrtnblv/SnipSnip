@@ -1,0 +1,44 @@
+{
+    "832d6f7a-42c3-43f1-a3ce-9a678272f811": {
+        "id": "db508973-2438-4788-9f19-373c30a03512",
+        "name": "Date",
+        "designId": "4cd64839-004c-4eb2-9be5-8f9fbe8de302",
+        "pluginId": "832d6f7a-42c3-43f1-a3ce-9a678272f811",
+        "publicData": {}
+    },
+    "2bd1c688-31c5-443e-ae25-59aa5b6431fb": {
+        "id": "ea1a80da-2d98-48c8-839c-e458c42d4349",
+        "name": "REST API",
+        "designId": "4cd64839-004c-4eb2-9be5-8f9fbe8de302",
+        "pluginId": "2bd1c688-31c5-443e-ae25-59aa5b6431fb",
+        "publicData": {}
+    },
+    "1fa0dd68-5069-436c-9a7d-3b54c340f1fa": {
+        "id": "07990199-512c-4012-aa3d-7674e0a9bd4a",
+        "name": "Supabase Auth",
+        "designId": "4cd64839-004c-4eb2-9be5-8f9fbe8de302",
+        "pluginId": "1fa0dd68-5069-436c-9a7d-3b54c340f1fa",
+        "publicData": {
+            "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdiZ2lkcmF0cGN6d3hqcmtoamhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA0ODgyNzksImV4cCI6MjA2NjA2NDI3OX0.tgXqG2pZNEdJaFa7sm0ABPJH-4hXD3nCblG3MGi4ZNA",
+            "roleTable": "roles",
+            "projectUrl": "https://gbgidratpczwxjrkhjhk.supabase.co",
+            "userRoleTable": "users_profiles",
+            "roleTableNameColumn": "name",
+            "afterForbiddenPageId": "1983de6b-396d-49da-94c7-561d93c6e381",
+            "afterNotSignInPageId": "806fa1f2-0c01-4d10-ba59-60221b6ea3b5",
+            "userRoleTableRoleColumn": "role_id",
+            "userRoleTableUserColumn": "id"
+        }
+    },
+    "f9ef41c3-1c53-4857-855b-f2f6a40b7186": {
+        "id": "0507e6bf-c4ea-40c3-b729-5839a45a4f5f",
+        "name": "Supabase",
+        "designId": "4cd64839-004c-4eb2-9be5-8f9fbe8de302",
+        "pluginId": "f9ef41c3-1c53-4857-855b-f2f6a40b7186",
+        "publicData": {
+            "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdiZ2lkcmF0cGN6d3hqcmtoamhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA0ODgyNzksImV4cCI6MjA2NjA2NDI3OX0.tgXqG2pZNEdJaFa7sm0ABPJH-4hXD3nCblG3MGi4ZNA",
+            "projectUrl": "https://gbgidratpczwxjrkhjhk.supabase.co",
+            "realtimeTables": {}
+        }
+    }
+}
