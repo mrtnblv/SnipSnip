@@ -1,12 +1,11 @@
-# <div align="center"><img  src="https://snipsnip.tools/cgi/image/snipsnip_social_1XVNO2VNNRqpKqEiLZ4WP.webp?format=raw" width="300"/> </br>SnipSnip/div>
-
-
 ![License](https://img.shields.io/github/license/mrtnblv/snipsnip?color=blue)
 ![Stars](https://img.shields.io/github/stars/mrtnblv/snipsnip?style=social)
 ![Issues](https://img.shields.io/github/issues/mrtnblv/snipsnip)
 ![Last Commit](https://img.shields.io/github/last-commit/mrtnblv/snipsnip)
 
-> SnipSnip is a simple code snippet manager powered by AI, built with [WeWeb](https://weweb.io/).
+# <div align="center"><img src="https://snipsnip.tools/cgi/image/snipsnip_social_1XVNO2VNNRqpKqEiLZ4WP.webp?format=raw" width="300"/></br>SnipSnip</div>
+
+SnipSnip is a simple code snippet manager powered by AI, built with [WeWeb](https://weweb.io/).
 
 ## Features
 
