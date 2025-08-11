@@ -1,4 +1,4 @@
-# <div align="center"><img src="https://snipsnip.tools/cgi/image/snipsnip_social_1XVNO2VNNRqpKqEiLZ4WP.webp?format=raw" width="300"/></br>SnipSnip</div>
+# <div align="center"><img src="https://snipsnip.tools/cgi/image/snipsnip_favicon_BlWH_cMzHEbSgmezgT74f.png?width=200&quality=100&height=200" width="300"/></br>SnipSnip</div>
 
 SnipSnip is a simple code snippet manager powered by AI, built with [WeWeb](https://weweb.io/).
 
