@@ -11,13 +11,6 @@ SnipSnip is a simple code snippet manager powered by AI, built with [WeWeb](http
 - **Multilingual** — 10+ languages supported for the interface and AI generation
 - **Keyboard Shortcuts** — Stay in flow and work without a mouse
 
-## Roadmap
-
-- Snippet sharing
-- Search suggestions
-- Raw code links
-- Google and GitHub signup
-
 ## Stack
 
 | Layer       | Technology |
