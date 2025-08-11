@@ -4,7 +4,7 @@ SnipSnip is a simple code snippet manager powered by AI, built with [WeWeb](http
 
 ## Features
 
-- **AI-Powered Metadata** — Automatic language detection, title, description, and tags
+- **Magic Paste** — Automatic language detection, title, description, and tags
 - **Integrated Editor** — Clean editor with syntax highlighting
 - **Instant Search** — Search titles, tags, descriptions, or code in real time
 - **Dark / Light Mode** — Matches your system theme
