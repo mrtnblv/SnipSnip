@@ -15,6 +15,7 @@ SnipSnip is a simple code snippet manager powered by AI, built with [WeWeb](http
 
 | Layer       | Technology |
 |-------------|------------|
+| Landing Page| [Webstudio](https://webstudio.is/) |
 | Frontend    | [WeWeb](https://weweb.io/) |
 | Backend/Auth| [Supabase](https://supabase.com/) |
 | AI          | [OpenAI API](https://platform.openai.com/) |
